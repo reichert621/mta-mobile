@@ -1,28 +1,18 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  QueryClient,
-  QueryClientProvider,
-  focusManager,
-} from "@tanstack/react-query";
+import { QueryClient, focusManager } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppStateStatus, Platform } from "react-native";
 
 import "../global.css";
 
-import { useColorScheme } from "@/components/useColorScheme";
 import { useAppState, useOnlineManager } from "@/utils/hooks";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppStateStatus, Platform } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.

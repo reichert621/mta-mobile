@@ -38,12 +38,6 @@ export function useActiveAlerts(options: any = {}) {
     ...options,
   });
 
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   "/api/alerts",
-  //   () => fetchActiveAlerts(),
-  //   options
-  // );
-
   return { data, error, isPending, isLoading, isRefetching, refetch };
 }
 
@@ -69,12 +63,6 @@ export function useAllRoutes(options: any = {}) {
     ...options,
   });
 
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   "/api/routes",
-  //   () => fetchAllRoutes(),
-  //   options
-  // );
-
   return { data, error, isPending, isLoading, isRefetching, refetch };
 }
 
@@ -87,11 +75,6 @@ export const fetchRouteById = async (
 };
 
 export function useRouteById(routeId: string, options: any = {}) {
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   ["/api/routes", routeId],
-  //   () => fetchRouteById(routeId),
-  //   options
-  // );
   const {
     isPending,
     isLoading,
@@ -121,11 +104,6 @@ export const fetchStationsByQuery = async (
 };
 
 export function useStationsByQuery(query: string, options: any = {}) {
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   ["/api/stations", query],
-  //   () => fetchStationsByQuery(query),
-  //   options
-  // );
   const {
     isPending,
     isLoading,
@@ -168,12 +146,6 @@ export function useStationsByLocation(
   longitude: number,
   options: any = {}
 ) {
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   ["/api/stations", latitude, longitude],
-  //   () => fetchStationsByLocation(latitude, longitude),
-  //   options
-  // );
-
   const {
     isPending,
     isLoading,
@@ -202,11 +174,6 @@ export const fetchStationById = async (
 };
 
 export function useStationById(stationId: string, options: any = {}) {
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   [`/api/stations/${stationId}`, stationId],
-  //   () => fetchStationById(stationId),
-  //   options
-  // );
   const {
     isPending,
     isLoading,
@@ -236,12 +203,6 @@ export const fetchStationsById = async (
 };
 
 export function useStationsByIds(stationIds: string[], options: any = {}) {
-  // const { data, error, isLoading, isValidating, mutate } = useSWR(
-  //   [`/api/stations/${stationIds.join(",")}`, stationIds],
-  //   () => fetchStationsById(stationIds),
-  //   options
-  // );
-
   const {
     isPending,
     isLoading,
