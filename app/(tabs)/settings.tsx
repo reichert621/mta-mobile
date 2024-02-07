@@ -30,12 +30,16 @@ export default function SettingsScreen() {
 
   // TODO: figure out a better way to handle toggling active favorites
   React.useEffect(() => {
+    let t;
+
     const cleanup = async () => {
       await set(favorites.filter((r) => !!r.active));
     };
 
     if (inactive.length) {
-      setTimeout(() => cleanup(), 10000);
+      clearTimeout(t);
+
+      t = setTimeout(() => cleanup(), 1000);
     }
   }, [inactive.length]);
 
@@ -62,6 +66,10 @@ export default function SettingsScreen() {
 
   const handleAddFavorite = async (station: StationSchedule) => {
     const { id, name, routes, location } = station;
+
+    if (favorites.some((r) => r.id === id)) {
+      return;
+    }
 
     await set(
       favorites.concat({
@@ -103,7 +111,7 @@ export default function SettingsScreen() {
               className="border-b border-zinc-200 py-4 px-2"
             >
               <View className="flex flex-row items-center justify-between">
-                <Text className="text-xl font-medium mb-1">{station.name}</Text>
+                <Text className="text-xl font-medium">{station.name}</Text>
                 <Pressable onPress={() => toggle(station)}>
                   <Ionicons
                     name="star"
@@ -114,19 +122,23 @@ export default function SettingsScreen() {
                   />
                 </Pressable>
               </View>
-              <View className="flex flex-row items-center gap-1">
-                {routes.map((r) => {
-                  const [bg, text] = getColorByRoute(r);
-                  return (
-                    <View
-                      key={r}
-                      className={`${bg} rounded-full items-center justify-center h-8 w-8`}
-                    >
-                      <Text className={`${text} text-sm font-medium`}>{r}</Text>
-                    </View>
-                  );
-                })}
-              </View>
+              {routes.length > 0 && (
+                <View className="mt-1 flex flex-row items-center gap-1">
+                  {routes.map((r) => {
+                    const [bg, text] = getColorByRoute(r);
+                    return (
+                      <View
+                        key={r}
+                        className={`${bg} rounded-full items-center justify-center h-8 w-8`}
+                      >
+                        <Text className={`${text} text-sm font-medium`}>
+                          {r}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
           );
         })}
