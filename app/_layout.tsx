@@ -13,6 +13,7 @@ import { AppStateStatus, Platform } from "react-native";
 import "../global.css";
 
 import { useAppState, useOnlineManager } from "@/utils/hooks";
+import { FavoritesProvider } from "@/utils/context";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -81,10 +82,12 @@ function RootLayoutNav() {
       persistOptions={{ persister: asyncStoragePersister }}
     >
       <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
+        <FavoritesProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </FavoritesProvider>
       </SafeAreaProvider>
     </PersistQueryClientProvider>
   );

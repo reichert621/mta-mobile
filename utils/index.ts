@@ -1,19 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export type FavoriteRoute = {
+export type FavoriteStation = {
   id: string;
   name: string;
   location?: [number, number];
+  routes?: string[];
   rank?: number;
+  active?: boolean;
   northbound?: boolean;
   southbound?: boolean;
 };
 
-export const DEFAULT_FAVORITES: FavoriteRoute[] = [
+export const DEFAULT_FAVORITES: FavoriteStation[] = [
   {
     id: "52ed",
     location: [40.690635, -73.981824],
     name: "DeKalb Av",
+    active: true,
     northbound: true,
     southbound: false,
   },
@@ -21,6 +24,7 @@ export const DEFAULT_FAVORITES: FavoriteRoute[] = [
     id: "289d",
     location: [40.688246, -73.980492],
     name: "Nevins St",
+    active: true,
     northbound: true,
     southbound: false,
   },
@@ -28,6 +32,7 @@ export const DEFAULT_FAVORITES: FavoriteRoute[] = [
     id: "ec1f",
     location: [40.688484, -73.985001],
     name: "Hoyt-Schermerhorn Sts",
+    active: true,
     northbound: true,
     southbound: false,
   },
@@ -35,7 +40,7 @@ export const DEFAULT_FAVORITES: FavoriteRoute[] = [
 
 const CACHE_KEY = "__mta:favorites";
 
-export const getCachedFavorites = async (): Promise<FavoriteRoute[]> => {
+export const getCachedFavorites = async (): Promise<FavoriteStation[]> => {
   try {
     const data = await AsyncStorage.getItem(CACHE_KEY);
     const json = data ? JSON.parse(data) : [];
@@ -47,7 +52,7 @@ export const getCachedFavorites = async (): Promise<FavoriteRoute[]> => {
   }
 };
 
-export const setCachedFavorites = async (favorites: FavoriteRoute[]) => {
+export const setCachedFavorites = async (favorites: FavoriteStation[]) => {
   try {
     await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(favorites));
   } catch (e) {
