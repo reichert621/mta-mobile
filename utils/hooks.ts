@@ -1,5 +1,6 @@
 import React from "react";
 import { AppState, AppStateStatus, Platform } from "react-native";
+import { useFocusEffect } from "expo-router";
 import NetInfo from "@react-native-community/netinfo";
 import { onlineManager } from "@tanstack/react-query";
 
@@ -87,4 +88,31 @@ export function useOnlineManager() {
       });
     }
   }, []);
+}
+
+export function useRefreshOnFocus(refetch: () => void) {
+  const enabledRef = React.useRef(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (enabledRef.current) {
+        console.log("[useFocusEffect] Refetching!");
+        refetch();
+      } else {
+        enabledRef.current = true;
+      }
+    }, [refetch])
+  );
+
+  useAppState(
+    React.useCallback(
+      (state) => {
+        if (state === "active") {
+          console.log("[useAppState] Refetching!");
+          refetch();
+        }
+      },
+      [refetch]
+    )
+  );
 }

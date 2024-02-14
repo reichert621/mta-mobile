@@ -13,55 +13,28 @@ export default function SettingsScreen() {
   const { favorites = [], set } = useFavorites();
   const [query, setQuery] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
-
   const {
     data: results = [],
     isLoading: isLoadingSearchResults,
     error: searchError,
   } = useStationsByQuery(searchQuery);
-  // console.log("Results!", results);
-  const inactive = favorites.filter((r) => !r.active);
-  // TODO: get rid of this?
+
   const favoritesById = React.useMemo(() => {
     return favorites.reduce((acc, record) => {
       return { ...acc, [record.id]: record };
     }, {} as Record<string, FavoriteStation>);
   }, [favorites]);
 
-  // TODO: figure out a better way to handle toggling active favorites
-  React.useEffect(() => {
-    let t;
-
-    const cleanup = async () => {
-      await set(favorites.filter((r) => !!r.active));
-    };
-
-    if (inactive.length) {
-      clearTimeout(t);
-
-      t = setTimeout(() => cleanup(), 1000);
-    }
-  }, [inactive.length]);
-
   const toggle = async (route: FavoriteStation) => {
-    await set(
-      favorites.map((favorite) => {
-        if (favorite.id === route.id) {
-          return { ...favorite, active: !favorite.active };
-        }
+    const isFavorited = !!favoritesById[route.id];
 
-        return favorite;
-      })
-    );
-    // const isFavorited = !!favoritesById[route.id];
-
-    // if (isFavorited) {
-    //   // Remove
-    //   await set(favorites.filter((favorite) => favorite.id !== route.id));
-    // } else {
-    //   // Add
-    //   await set(favorites.concat(route));
-    // }
+    if (isFavorited) {
+      // Remove
+      await set(favorites.filter((favorite) => favorite.id !== route.id));
+    } else {
+      // Add
+      await set(favorites.concat(route));
+    }
   };
 
   const handleAddFavorite = async (station: StationSchedule) => {
@@ -132,6 +105,7 @@ export default function SettingsScreen() {
                 <View className="mt-1 flex flex-row items-center gap-1">
                   {routes.map((r) => {
                     const [bg, text] = getColorByRoute(r);
+
                     return (
                       <View
                         key={r}
