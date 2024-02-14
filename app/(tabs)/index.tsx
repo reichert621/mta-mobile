@@ -19,14 +19,25 @@ const ScheduleItem = ({
 }) => {
   const formatted = dayjs(time).format("h:mm a");
   const mins = dayjs(time).diff(dayjs(), "minutes");
+  const secs = dayjs(time).diff(dayjs(), "seconds");
   const [bg, text] = getColorByRoute(route);
+
+  const [n, setN] = React.useState(0);
+
+  React.useEffect(() => {
+    if (mins < 1) {
+      const i = setInterval(() => setN((n) => n + 1), 1000);
+
+      return () => clearInterval(i);
+    }
+  }, [mins]);
 
   return (
     <View
       className={cn(
         "flex mb-1 flex-row items-center justify-between",
         className,
-        mins < 0 && "opacity-60"
+        secs < 0 && "opacity-60"
       )}
     >
       <View className="flex flex-row items-center gap-3">
@@ -35,10 +46,17 @@ const ScheduleItem = ({
         >
           <Text className={`${text} text-sm font-bold`}>{route}</Text>
         </View>
-        <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
-          {Math.abs(mins)} {mins === 1 ? "min" : "mins"}{" "}
-          {mins < 0 ? "ago" : "away"}
-        </Text>
+        {mins === 0 ? (
+          <Text className="text-red-700 dark:text-red-300 font-medium text-base">
+            {Math.abs(secs)} {secs === 1 ? "second" : "seconds"}{" "}
+            {secs < 0 ? "ago" : "away"}
+          </Text>
+        ) : (
+          <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
+            {Math.abs(mins)} {mins === 1 ? "min" : "mins"}{" "}
+            {secs < 0 ? "ago" : "away"}
+          </Text>
+        )}
       </View>
 
       <View>
