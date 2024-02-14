@@ -48,12 +48,12 @@ const ScheduleItem = ({
         </View>
         {mins === 0 ? (
           <Text className="text-red-700 dark:text-red-300 font-medium text-base">
-            {Math.abs(secs)} {secs === 1 ? "second" : "seconds"}{" "}
+            {Math.abs(secs)} {Math.abs(secs) === 1 ? "second" : "seconds"}{" "}
             {secs < 0 ? "ago" : "away"}
           </Text>
         ) : (
           <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
-            {Math.abs(mins)} {mins === 1 ? "min" : "mins"}{" "}
+            {Math.abs(mins)} {Math.abs(mins) === 1 ? "min" : "mins"}{" "}
             {secs < 0 ? "ago" : "away"}
           </Text>
         )}
