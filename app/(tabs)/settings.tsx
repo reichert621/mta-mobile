@@ -91,15 +91,19 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeScrollView className="bg-white">
-      <View className="mt-8 mb-4 px-4">
-        <Text className="font-bold text-zinc-900 text-4xl">Settings</Text>
-        <View className="h-px bg-zinc-200 my-2" />
+    <SafeScrollView className="bg-white dark:bg-zinc-950">
+      <View className="mt-12 mb-4 px-4">
+        <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
+          Settings
+        </Text>
+        <View className="h-px bg-zinc-200 dark:bg-zinc-800 my-2" />
       </View>
 
       <View className="px-4">
-        <View className="border-b border-zinc-200 pb-2">
-          <Text className="text-2xl font-bold">Favorites</Text>
+        <View className="border-b border-zinc-200 dark:border-zinc-800 pb-2">
+          <Text className="text-2xl font-bold dark:text-zinc-200">
+            Favorites
+          </Text>
         </View>
         {/* TODO: allow sorting (https://github.com/computerjazz/react-native-draggable-flatlist) */}
         {favorites.map((station) => {
@@ -108,10 +112,12 @@ export default function SettingsScreen() {
           return (
             <View
               key={station.id}
-              className="border-b border-zinc-200 py-4 px-2"
+              className="border-b border-zinc-200 dark:border-zinc-800 py-4 px-2"
             >
               <View className="flex flex-row items-center justify-between">
-                <Text className="text-xl font-medium">{station.name}</Text>
+                <Text className="text-xl font-medium dark:text-zinc-300">
+                  {station.name}
+                </Text>
                 <Pressable onPress={() => toggle(station)}>
                   <Ionicons
                     name="star"
@@ -151,30 +157,30 @@ export default function SettingsScreen() {
         {/* TODO: figure out how search inputs look in ios apps */}
         <View className="flex flex-row gap-2 relative items-center">
           <TextInput
-            className="border bg-zinc-100 rounded-lg flex-1 border-zinc-200 p-3"
+            className="border bg-zinc-100 dark:bg-zinc-800 rounded-lg flex-1 border-zinc-200 dark:border-zinc-700 p-3 dark:text-zinc-100"
             placeholder="Search for a station..."
             value={query}
             onChangeText={(text) => setQuery(text)}
           />
           <Pressable
-            className="bg-white border border-zinc-200 absolute right-2 rounded-xl py-2 px-2"
+            className="bg-white border border-zinc-200 dark:border-zinc-800 absolute right-2 rounded-xl py-2 px-2"
             onPress={handleSearchStations}
           >
             <Ionicons name="search" color={colors.zinc[700]} size={16} />
           </Pressable>
         </View>
 
-        <View className="mt-4 border-t border-zinc-200">
+        <View className="mt-4 border-t border-zinc-200 dark:border-zinc-800">
           {/* TODO: order by closest (if location available) */}
           {results.map((station) => {
             return (
               <Pressable
                 key={station.id}
-                className="border-b border-zinc-200 py-3 px-2"
+                className="border-b border-zinc-200 dark:border-zinc-800 py-3 px-2"
                 onPress={() => handleAddFavorite(station)}
               >
                 <View className="flex flex-row items-center justify-between">
-                  <Text className="text-lg font-medium mb-1">
+                  <Text className="text-lg font-medium mb-1 dark:text-zinc-300">
                     {station.name}
                   </Text>
                   <Ionicons

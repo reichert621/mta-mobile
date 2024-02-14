@@ -2,6 +2,7 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
+import colors from "tailwindcss/colors";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -27,6 +28,11 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        tabBarStyle: {
+          borderTopColor:
+            colorScheme === "dark" ? colors.zinc[900] : colors.zinc[200],
+          backgroundColor: colorScheme === "dark" ? "#000000" : "#ffffff",
+        },
       }}
     >
       <Tabs.Screen

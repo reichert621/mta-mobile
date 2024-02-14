@@ -38,11 +38,13 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
 
         return (
           <View key={station.id} className="mb-6">
-            <Text className="text-2xl font-bold mb-2">{station.name}</Text>
+            <Text className="text-2xl font-bold mb-2 dark:text-zinc-200">
+              {station.name}
+            </Text>
 
             <View className="mb-4">
               <View className="mb-2">
-                <Text className="text-lg font-medium text-zinc-500">
+                <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
                   Northbound
                 </Text>
               </View>
@@ -64,7 +66,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
                           {route}
                         </Text>
                       </View>
-                      <Text className="text-zinc-700 font-medium text-base">
+                      <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
                         {mins} {mins === 1 ? "min" : "mins"} away
                       </Text>
                     </View>
@@ -80,7 +82,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
             </View>
             <View className="mb-4">
               <View className="mb-2">
-                <Text className="text-lg font-medium text-zinc-500">
+                <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
                   Southbound
                 </Text>
               </View>
@@ -102,7 +104,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
                           {route}
                         </Text>
                       </View>
-                      <Text className="text-zinc-700 font-medium text-base">
+                      <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
                         {mins} {mins === 1 ? "min" : "mins"} away
                       </Text>
                     </View>
@@ -127,10 +129,12 @@ export default function HomeScreen() {
   const { favorites = [], isLoading, error } = useFavorites();
 
   return (
-    <SafeScrollView className="bg-white">
+    <SafeScrollView className="bg-white dark:bg-zinc-950">
       <View className="mt-12 mb-4 px-4">
-        <Text className="font-bold text-zinc-900 text-4xl">Trains</Text>
-        <View className="h-px bg-zinc-200 my-2" />
+        <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
+          Trains
+        </Text>
+        <View className="h-px bg-zinc-200 dark:bg-zinc-800 my-2" />
       </View>
       {/* <Debugger data={favorites} /> */}
 
