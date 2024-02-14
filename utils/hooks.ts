@@ -4,14 +4,14 @@ import NetInfo from "@react-native-community/netinfo";
 import { onlineManager } from "@tanstack/react-query";
 
 import {
-  FavoriteRoute,
+  FavoriteStation,
   getCachedFavorites,
   setCachedFavorites,
 } from "@/utils/index";
 
 export function useFavorites() {
   const [isLoading, setLoadingState] = React.useState(true);
-  const [favorites, setFavorites] = React.useState<FavoriteRoute[]>([]);
+  const [favorites, setFavorites] = React.useState<FavoriteStation[]>([]);
   const [error, setError] = React.useState<any>(null);
 
   React.useEffect(() => {
@@ -42,7 +42,7 @@ export function useFavorites() {
     }
   };
 
-  const set = async (favorites: FavoriteRoute[]) => {
+  const set = async (favorites: FavoriteStation[]) => {
     try {
       await setCachedFavorites(favorites);
       const cached = await getCachedFavorites();
