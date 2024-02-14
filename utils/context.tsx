@@ -1,7 +1,4 @@
 import React from "react";
-import { AppState, AppStateStatus, Platform } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
-import { onlineManager } from "@tanstack/react-query";
 
 import {
   FavoriteStation,
@@ -9,7 +6,29 @@ import {
   setCachedFavorites,
 } from "@/utils/index";
 
-export function useFavorites() {
+type ContextProps = {
+  isLoading: boolean;
+  favorites: FavoriteStation[];
+  error: any;
+  refresh: () => Promise<any>;
+  set: (favorites: FavoriteStation[]) => Promise<any>;
+};
+
+export const FavoritesContext = React.createContext<ContextProps>({
+  isLoading: false,
+  error: null,
+  favorites: [],
+  refresh: () => Promise.resolve(),
+  set: () => Promise.resolve(),
+});
+
+export const useFavorites = () => React.useContext(FavoritesContext);
+
+export const FavoritesProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [isLoading, setLoadingState] = React.useState(true);
   const [favorites, setFavorites] = React.useState<FavoriteStation[]>([]);
   const [error, setError] = React.useState<any>(null);
@@ -54,37 +73,17 @@ export function useFavorites() {
     }
   };
 
-  return {
+  const value: ContextProps = {
     isLoading,
-    favorites,
     error,
+    favorites,
     refresh,
     set,
   };
-}
 
-export function useAppState(onChange: (status: AppStateStatus) => void) {
-  React.useEffect(() => {
-    const subscription = AppState.addEventListener("change", onChange);
-
-    return () => {
-      subscription.remove();
-    };
-  }, [onChange]);
-}
-
-export function useOnlineManager() {
-  React.useEffect(() => {
-    // React Query already supports on reconnect auto refetch in web browser
-    if (Platform.OS !== "web") {
-      return NetInfo.addEventListener((state) => {
-        console.log("NetInfo:", state);
-        onlineManager.setOnline(
-          state.isConnected != null &&
-            state.isConnected &&
-            Boolean(state.isInternetReachable)
-        );
-      });
-    }
-  }, []);
-}
+  return (
+    <FavoritesContext.Provider value={value}>
+      {children}
+    </FavoritesContext.Provider>
+  );
+};

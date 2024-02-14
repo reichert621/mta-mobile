@@ -96,6 +96,10 @@ export function useRouteById(routeId: string, options: any = {}) {
 export const fetchStationsByQuery = async (
   query: string
 ): Promise<StationSchedule[]> => {
+  if (!query || query.trim().length === 0) {
+    return [];
+  }
+
   const { data: response } = await mta.get(`/api/stations`, {
     params: { query },
   });
@@ -112,7 +116,7 @@ export function useStationsByQuery(query: string, options: any = {}) {
     error,
     data,
     refetch,
-  } = useQuery({
+  } = useQuery<any, Error, StationSchedule[]>({
     queryKey: ["/api/stations", query],
     queryFn: () => fetchStationsByQuery(query),
     refetchOnMount: "always", //
