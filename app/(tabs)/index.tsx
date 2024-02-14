@@ -25,7 +25,8 @@ const ScheduleItem = ({
     <View
       className={cn(
         "flex mb-1 flex-row items-center justify-between",
-        className
+        className,
+        mins < 0 && "opacity-60"
       )}
     >
       <View className="flex flex-row items-center gap-3">
@@ -35,7 +36,8 @@ const ScheduleItem = ({
           <Text className={`${text} text-sm font-bold`}>{route}</Text>
         </View>
         <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
-          {mins} {mins === 1 ? "min" : "mins"} away
+          {Math.abs(mins)} {mins === 1 ? "min" : "mins"}{" "}
+          {mins < 0 ? "ago" : "away"}
         </Text>
       </View>
 
@@ -54,7 +56,9 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
     isRefetching,
     error,
     refetch,
-  } = useStationsByIds(routeIds, { refetchInterval: 10000 });
+  } = useStationsByIds(routeIds, {
+    refetchInterval: 10000,
+  });
   useRefreshOnFocus(refetch);
 
   // console.log({
