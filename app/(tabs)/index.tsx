@@ -144,6 +144,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
 };
 
 export default function HomeScreen() {
+  // TODO: if no favorites, find nearby stations
   const { favorites = [], isLoading, error } = useFavorites();
 
   return (
@@ -157,7 +158,7 @@ export default function HomeScreen() {
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
           Trains
         </Text>
-        <View className="h-px bg-zinc-100 dark:bg-zinc-800 my-2" />
+        <View className="h-px bg-zinc-100 dark:bg-zinc-900 my-2" />
       </View>
 
       {favorites.length > 0 && <TrainSchedules routes={favorites} />}

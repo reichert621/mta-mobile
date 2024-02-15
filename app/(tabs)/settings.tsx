@@ -4,10 +4,18 @@ import {
   TextInput,
   View,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "tailwindcss/colors";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 import useDebounce from "react-use/esm/useDebounce";
 
 import { SafeScrollView, SafeView } from "@/components/SafeView";
@@ -15,12 +23,53 @@ import { useFavorites } from "@/utils/context";
 import { FavoriteStation, getColorByRoute } from "@/utils";
 import { StationSchedule, useStationsByQuery } from "@/utils/api";
 import SwipeToDeleteRow from "@/components/swipeable/SwipeToDeleteRow";
+import SlideToDelete from "@/components/swipeable/SlideToDelete";
+
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+const _AnimatedFavoriteItem = ({
+  station,
+  onDelete,
+}: {
+  station: FavoriteStation;
+  onDelete: () => void;
+}) => {
+  const { routes = [] } = station;
+
+  return (
+    <SwipeToDeleteRow onDelete={onDelete}>
+      <Animated.View className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2">
+        <View className="flex flex-row items-center justify-between">
+          <Text className="text-xl font-medium dark:text-zinc-300">
+            {station.name}
+          </Text>
+        </View>
+        {routes.length > 0 && (
+          <View className="mt-1 flex flex-row items-center gap-1">
+            {routes.map((r) => {
+              const [bg, text] = getColorByRoute(r);
+
+              return (
+                <View
+                  key={r}
+                  className={`${bg} rounded-full items-center justify-center h-8 w-8`}
+                >
+                  <Text className={`${text} text-sm font-semibold`}>{r}</Text>
+                </View>
+              );
+            })}
+          </View>
+        )}
+      </Animated.View>
+    </SwipeToDeleteRow>
+  );
+};
 
 const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
   const { routes = [] } = station;
 
   return (
-    <View className="ml-4 border-b border-zinc-100 dark:border-zinc-800 py-4 px-2">
+    <View className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2">
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-medium dark:text-zinc-300">
           {station.name}
@@ -56,7 +105,7 @@ const SearchResultItem = ({
   return (
     <Pressable
       key={station.id}
-      className="border-b border-zinc-100 dark:border-zinc-800 py-3 px-2"
+      className="border-b border-zinc-100 dark:border-zinc-900 py-3 px-2"
       onPress={onPress}
     >
       <View className="flex flex-row items-center justify-between">
@@ -96,7 +145,6 @@ export default function SettingsScreen() {
     isLoading: isLoadingSearchResults,
     error: searchError,
   } = useStationsByQuery(searchQuery);
-
   const [, cancel] = useDebounce(() => setSearchQuery(query), 800, [query]);
 
   const favoritesById = React.useMemo(() => {
@@ -155,20 +203,28 @@ export default function SettingsScreen() {
       </View>
 
       <View className="">
-        <View className="ml-4 h-px border-t border-zinc-100"></View>
+        <View className="ml-4 h-px border-t border-zinc-100 dark:border-zinc-900"></View>
         {/* TODO: allow sorting (https://github.com/computerjazz/react-native-draggable-flatlist) */}
         {favorites.map((station) => {
           return (
-            <SwipeToDeleteRow key={station.id} onDelete={() => toggle(station)}>
+            <SlideToDelete
+              key={station.id}
+              // TODO: is there a clean way to avoid hardcoding this???
+              initialHeight={84}
+              // TODO: rename?
+              onDelete={() => toggle(station)}
+            >
               <FavoriteItem station={station} />
-            </SwipeToDeleteRow>
+            </SlideToDelete>
           );
         })}
       </View>
 
       <View className="mt-12 px-4">
         <View>
-          <Text className="text-2xl font-bold mb-2">Search stations</Text>
+          <Text className="text-2xl font-bold mb-2 text-zinc-800 dark:text-zinc-200">
+            Search stations
+          </Text>
         </View>
         {/* TODO: figure out how search inputs look in ios apps */}
         <View className="flex flex-row gap-2 relative items-center">
@@ -179,7 +235,7 @@ export default function SettingsScreen() {
             onChangeText={(text) => setQuery(text)}
           />
           <Pressable
-            className="bg-white hidden border border-zinc-100 dark:border-zinc-800 absolute right-1.5 rounded-xl py-2 px-2"
+            className="bg-white hidden border border-zinc-100 dark:border-zinc-900 absolute right-1.5 rounded-xl py-2 px-2"
             onPress={handleSearchStations}
           >
             <Ionicons name="search" color={colors.zinc[700]} size={16} />
@@ -187,7 +243,7 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      <View className="ml-4 mt-4 border-t border-zinc-100 dark:border-zinc-800">
+      <View className="ml-4 mt-4 border-t border-zinc-100 dark:border-zinc-900">
         {results.map((station) => {
           return (
             <SearchResultItem

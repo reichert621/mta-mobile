@@ -79,7 +79,7 @@ export function useOnlineManager() {
     // React Query already supports on reconnect auto refetch in web browser
     if (Platform.OS !== "web") {
       return NetInfo.addEventListener((state) => {
-        console.log("NetInfo:", state);
+        // console.log("NetInfo:", state);
         onlineManager.setOnline(
           state.isConnected != null &&
             state.isConnected &&

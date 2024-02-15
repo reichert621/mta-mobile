@@ -24,7 +24,7 @@ export const SwipeToDeleteRow = ({
     _dragAnimatedValue: Animated.AnimatedInterpolation<number>
   ) => {
     // TODO: investigate different settings here
-    const trans = progress.interpolate({
+    const translateX = progress.interpolate({
       inputRange: [0, 1],
       outputRange: [80, 0],
     });
@@ -33,10 +33,12 @@ export const SwipeToDeleteRow = ({
       <View
         style={{
           width: 80,
-          flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+          // flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
         }}
       >
-        <Animated.View style={{ flex: 1, transform: [{ translateX: trans }] }}>
+        <Animated.View
+          style={{ flex: 1, transform: [{ translateX: translateX }] }}
+        >
           <RectButton
             style={[styles.rightAction, { backgroundColor: colors.red[500] }]}
             onPress={onDelete}
