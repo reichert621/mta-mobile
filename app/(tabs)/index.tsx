@@ -98,7 +98,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
 
         return (
           <View key={station.id} className="mb-6">
-            <Text className="text-2xl font-bold mb-2 dark:text-zinc-200">
+            <Text className="text-2xl font-bold mb-2 text-zinc-800 dark:text-zinc-200">
               {station.name}
             </Text>
 
@@ -157,7 +157,7 @@ export default function HomeScreen() {
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
           Trains
         </Text>
-        <View className="h-px bg-zinc-200 dark:bg-zinc-800 my-2" />
+        <View className="h-px bg-zinc-100 dark:bg-zinc-800 my-2" />
       </View>
 
       {favorites.length > 0 && <TrainSchedules routes={favorites} />}
