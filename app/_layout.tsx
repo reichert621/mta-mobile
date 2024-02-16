@@ -9,6 +9,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppStateStatus, Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import "../global.css";
 
@@ -83,10 +84,21 @@ function RootLayoutNav() {
     >
       <SafeAreaProvider>
         <FavoritesProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
+          <GestureHandlerRootView className="flex-1">
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              {/* TODO: figure out best way to organize modals */}
+              <Stack.Screen
+                name="modals/routes/[id]"
+                options={{ presentation: "modal", headerShown: false }}
+              />
+              <Stack.Screen
+                name="modals/settings/[id]"
+                options={{ presentation: "modal", headerShown: false }}
+              />
+            </Stack>
+          </GestureHandlerRootView>
         </FavoritesProvider>
       </SafeAreaProvider>
     </PersistQueryClientProvider>
