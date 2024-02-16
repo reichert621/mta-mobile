@@ -186,8 +186,8 @@ export function useStationById(stationId: string, options: any = {}) {
     error,
     data,
     refetch,
-  } = useQuery({
-    queryKey: [`/api/stations/${stationId}`, stationId],
+  } = useQuery<any, Error, StationSchedule>({
+    queryKey: [`station`, stationId],
     queryFn: () => fetchStationById(stationId),
     refetchOnMount: "always", //
     ...options,
@@ -216,7 +216,7 @@ export function useStationsByIds(stationIds: string[], options: any = {}) {
     data,
     refetch,
   } = useQuery<any, Error, StationSchedule[]>({
-    queryKey: [`/api/stations/${stationIds.join(",")}`, ...stationIds],
+    queryKey: ["stations", ...stationIds],
     queryFn: () => fetchStationsById(stationIds),
     refetchOnMount: "always", //
     ...options,

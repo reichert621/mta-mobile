@@ -1,70 +1,14 @@
-import { RefreshControl, Text, View } from "react-native";
+import { Pressable, RefreshControl, Text, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import React from "react";
-import dayjs from "dayjs";
+import { router } from "expo-router";
 
 import { useFavorites } from "@/utils/context";
-import { FavoriteStation, cn, getColorByRoute } from "@/utils";
+import { FavoriteStation, cn } from "@/utils";
 import { SafeScrollView } from "@/components/SafeView";
 import { useStationsByIds } from "@/utils/api";
 import { useRefreshOnFocus } from "@/utils/hooks";
-
-const ScheduleItem = ({
-  className,
-  time,
-  route,
-}: {
-  className?: string;
-  time: string;
-  route: string;
-}) => {
-  const formatted = dayjs(time).format("h:mm a");
-  const mins = dayjs(time).diff(dayjs(), "minutes");
-  const secs = dayjs(time).diff(dayjs(), "seconds");
-  const [bg, text] = getColorByRoute(route);
-
-  const [n, setN] = React.useState(0);
-
-  React.useEffect(() => {
-    if (mins < 1) {
-      const i = setInterval(() => setN((n) => n + 1), 1000);
-
-      return () => clearInterval(i);
-    }
-  }, [mins]);
-
-  return (
-    <View
-      className={cn(
-        "flex mb-1 flex-row items-center justify-between",
-        className,
-        secs < 0 && "opacity-60"
-      )}
-    >
-      <View className="flex flex-row items-center gap-3">
-        <View
-          className={`${bg} h-9 w-9 items-center justify-center rounded-full`}
-        >
-          <Text className={`${text} text-sm font-bold`}>{route}</Text>
-        </View>
-        {mins === 0 ? (
-          <Text className="text-red-700 dark:text-red-300 font-medium text-base">
-            {Math.abs(secs)} {Math.abs(secs) === 1 ? "second" : "seconds"}{" "}
-            {secs < 0 ? "ago" : "away"}
-          </Text>
-        ) : (
-          <Text className="text-zinc-700 dark:text-zinc-300 font-medium text-base">
-            {Math.abs(mins)} {Math.abs(mins) === 1 ? "min" : "mins"}{" "}
-            {secs < 0 ? "ago" : "away"}
-          </Text>
-        )}
-      </View>
-
-      <View>
-        <Text className="text-zinc-400 text-base">{formatted}</Text>
-      </View>
-    </View>
-  );
-};
+import ScheduleItem from "@/components/ScheduleItem";
 
 const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
   const routeIds = routes.filter((r) => r.active).map((r) => r.id);
@@ -97,7 +41,7 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
         const southbound = station.S || [];
 
         return (
-          <View key={station.id} className="mb-6">
+          <Animated.View key={station.id} className="mb-6" entering={FadeIn}>
             <Text className="text-2xl font-bold mb-2 text-zinc-800 dark:text-zinc-200">
               {station.name}
             </Text>
@@ -115,6 +59,13 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
                     className={isRefetching ? "opacity-80" : "opacity-100"}
                     route={route}
                     time={time}
+                    onPress={() =>
+                      router.push(
+                        `/modals/routes/${
+                          station.id
+                        }?route=${route}&direction=${"N"}`
+                      )
+                    }
                   />
                 );
               })}
@@ -132,11 +83,18 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
                     className={isRefetching ? "opacity-80" : "opacity-100"}
                     route={route}
                     time={time}
+                    onPress={() =>
+                      router.push(
+                        `/modals/routes/${
+                          station.id
+                        }?route=${route}&direction=${"S"}`
+                      )
+                    }
                   />
                 );
               })}
             </View>
-          </View>
+          </Animated.View>
         );
       })}
     </View>

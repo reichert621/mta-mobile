@@ -88,6 +88,15 @@ function RootLayoutNav() {
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              {/* TODO: figure out best way to organize modals */}
+              <Stack.Screen
+                name="modals/routes/[id]"
+                options={{ presentation: "modal", headerShown: false }}
+              />
+              <Stack.Screen
+                name="modals/settings/[id]"
+                options={{ presentation: "modal", headerShown: false }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </FavoritesProvider>

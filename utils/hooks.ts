@@ -10,59 +10,59 @@ import {
   setCachedFavorites,
 } from "@/utils/index";
 
-export function useFavorites() {
-  const [isLoading, setLoadingState] = React.useState(true);
-  const [favorites, setFavorites] = React.useState<FavoriteStation[]>([]);
-  const [error, setError] = React.useState<any>(null);
+// export function useFavorites() {
+//   const [isLoading, setLoadingState] = React.useState(true);
+//   const [favorites, setFavorites] = React.useState<FavoriteStation[]>([]);
+//   const [error, setError] = React.useState<any>(null);
 
-  React.useEffect(() => {
-    const init = async () => {
-      try {
-        const cached = await getCachedFavorites();
+//   React.useEffect(() => {
+//     const init = async () => {
+//       try {
+//         const cached = await getCachedFavorites();
 
-        setFavorites(cached);
-      } catch (err) {
-        console.error("Failed to retrieve cached favorites:", err);
-        setError(err);
-      } finally {
-        setLoadingState(false);
-      }
-    };
+//         setFavorites(cached);
+//       } catch (err) {
+//         console.error("Failed to retrieve cached favorites:", err);
+//         setError(err);
+//       } finally {
+//         setLoadingState(false);
+//       }
+//     };
 
-    init();
-  }, []);
+//     init();
+//   }, []);
 
-  const refresh = async () => {
-    try {
-      const cached = await getCachedFavorites();
+//   const refresh = async () => {
+//     try {
+//       const cached = await getCachedFavorites();
 
-      setFavorites(cached);
-    } catch (err) {
-      console.error("Failed to retrieve cached favorites:", err);
-      setError(err);
-    }
-  };
+//       setFavorites(cached);
+//     } catch (err) {
+//       console.error("Failed to retrieve cached favorites:", err);
+//       setError(err);
+//     }
+//   };
 
-  const set = async (favorites: FavoriteStation[]) => {
-    try {
-      await setCachedFavorites(favorites);
-      const cached = await getCachedFavorites();
+//   const set = async (favorites: FavoriteStation[]) => {
+//     try {
+//       await setCachedFavorites(favorites);
+//       const cached = await getCachedFavorites();
 
-      setFavorites(cached);
-    } catch (err) {
-      console.error("Failed to set cached favorites:", err);
-      setError(err);
-    }
-  };
+//       setFavorites(cached);
+//     } catch (err) {
+//       console.error("Failed to set cached favorites:", err);
+//       setError(err);
+//     }
+//   };
 
-  return {
-    isLoading,
-    favorites,
-    error,
-    refresh,
-    set,
-  };
-}
+//   return {
+//     isLoading,
+//     favorites,
+//     error,
+//     refresh,
+//     set,
+//   };
+// }
 
 export function useAppState(onChange: (status: AppStateStatus) => void) {
   React.useEffect(() => {

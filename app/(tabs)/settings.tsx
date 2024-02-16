@@ -1,3 +1,4 @@
+import { Link, router } from "expo-router";
 import {
   Pressable,
   Text,
@@ -69,7 +70,10 @@ const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
   const { routes = [] } = station;
 
   return (
-    <View className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2">
+    <Pressable
+      className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2"
+      onPress={() => router.push(`/modals/settings/${station.id}`)}
+    >
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-medium dark:text-zinc-300">
           {station.name}
@@ -91,7 +95,7 @@ const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
           })}
         </View>
       )}
-    </View>
+    </Pressable>
   );
 };
 
@@ -210,6 +214,7 @@ export default function SettingsScreen() {
             <SlideToDelete
               key={station.id}
               // TODO: is there a clean way to avoid hardcoding this???
+              // FIXME: this is broken when routes are missing!
               initialHeight={84}
               // TODO: rename?
               onDelete={() => toggle(station)}
