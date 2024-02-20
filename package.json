@@ -43,7 +43,8 @@
     "react-native-web": "~0.19.6",
     "react-use": "^17.5.0",
     "tailwind-merge": "^2.2.1",
-    "expo-dev-client": "~3.3.8"
+    "expo-dev-client": "~3.3.8",
+    "expo-location": "~16.5.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

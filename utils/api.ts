@@ -155,17 +155,26 @@ export function useStationsByLocation(
     isLoading,
     isFetching,
     isRefetching,
+    isPlaceholderData,
     error,
     data,
     refetch,
-  } = useQuery({
+  } = useQuery<any, Error, StationSchedule[]>({
     queryKey: ["/api/stations", latitude, longitude],
     queryFn: () => fetchStationsByLocation(latitude, longitude),
     refetchOnMount: "always", //
     ...options,
   });
 
-  return { data, error, isPending, isLoading, isRefetching, refetch };
+  return {
+    data,
+    error,
+    isPending,
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+    refetch,
+  };
 }
 
 export const fetchStationById = async (
