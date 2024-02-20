@@ -107,12 +107,13 @@ export default function RouteModal() {
         [direction]: { ...enabled[direction], [route]: !isCurrentlyEnabled },
       });
 
-      const current = favorite!.enabled[direction];
+      const settings = favorite.enabled || EMPTY_SETTINGS;
+      const current = settings[direction];
       const updates = { ...current, [route]: !current[route] };
       console.log({ favorite, current, updates });
 
       await update(id, {
-        enabled: { ...favorite.enabled, [direction]: updates },
+        enabled: { ...settings, [direction]: updates },
       });
     } catch (e) {
       console.error("Failed to update route settings!", e);
