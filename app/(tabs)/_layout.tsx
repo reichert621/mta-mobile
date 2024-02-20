@@ -37,7 +37,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Trains",
+          title: "Favorites",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="star" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="nearby"
+        options={{
+          title: "Nearby",
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="train" color={color} />,
         }}

@@ -158,7 +158,7 @@ export function useStationsByLocation(
     error,
     data,
     refetch,
-  } = useQuery({
+  } = useQuery<any, Error, StationSchedule[]>({
     queryKey: ["/api/stations", latitude, longitude],
     queryFn: () => fetchStationsByLocation(latitude, longitude),
     refetchOnMount: "always", //
