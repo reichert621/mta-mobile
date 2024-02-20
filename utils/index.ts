@@ -35,8 +35,9 @@ export const DEFAULT_FAVORITES: FavoriteStation[] = [
     location: [40.690635, -73.981824],
     name: "DeKalb Av",
     active: true,
+    routes: ["B", "Q", "R"],
     enabled: {
-      northbound: {},
+      northbound: { B: true, Q: true },
       southbound: {},
     },
   },
@@ -45,8 +46,9 @@ export const DEFAULT_FAVORITES: FavoriteStation[] = [
     location: [40.688484, -73.985001],
     name: "Hoyt-Schermerhorn Sts",
     active: true,
+    routes: ["C", "G", "A"],
     enabled: {
-      northbound: {},
+      northbound: { G: true, A: true, C: true },
       southbound: {},
     },
   },

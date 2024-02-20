@@ -290,7 +290,13 @@ export default function SettingsScreen() {
 
       <View className="">
         <View className="ml-4 h-px border-t border-zinc-100 dark:border-zinc-900"></View>
-        {/* TODO: allow sorting (https://github.com/computerjazz/react-native-draggable-flatlist) */}
+        {favorites.length === 0 && (
+          <View className="p-8 justify-center items-center">
+            <Text className="text-zinc-500 dark:text-zinc-400 text-base">
+              No stations have been favorited.
+            </Text>
+          </View>
+        )}
         {favorites.map((station) => {
           return (
             <SlideToDelete

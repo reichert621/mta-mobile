@@ -1,7 +1,15 @@
-import { Pressable, RefreshControl, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import React from "react";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import colors from "tailwindcss/colors";
 
 import { useFavorites } from "@/utils/context";
 import { FavoriteStation, cn } from "@/utils";
@@ -147,7 +155,32 @@ export default function HomeScreen() {
         <View className="h-px bg-zinc-100 dark:bg-zinc-900 my-2" />
       </View>
 
-      {favorites.length > 0 && <TrainSchedules routes={favorites} />}
+      {isLoading ? (
+        <View className="flex-1 justify-center items-center py-12">
+          <ActivityIndicator />
+        </View>
+      ) : favorites.length === 0 ? (
+        <View className="flex-1 justify-center items-center py-12">
+          <Text className="text-lg text-zinc-500 dark:text-zinc-400">
+            No stations have been favorited.
+          </Text>
+
+          <Link href="/settings" asChild>
+            <Pressable className="mt-4 flex flex-row gap-2 items-center justify-center border border-zinc-700 bg-zinc-800 rounded px-4 py-3">
+              <Text className="text-zinc-100 font-medium">
+                Manage your favorite stations
+              </Text>
+              <Ionicons
+                name="arrow-forward"
+                color={colors.zinc[200]}
+                size={16}
+              />
+            </Pressable>
+          </Link>
+        </View>
+      ) : (
+        <TrainSchedules routes={favorites} />
+      )}
     </SafeScrollView>
   );
 }
