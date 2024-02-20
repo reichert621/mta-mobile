@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FontAwesome, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import {
@@ -16,12 +16,11 @@ import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
+import colors from "tailwindcss/colors";
 
 import { SafeScrollView, SafeView } from "@/components/SafeView";
-import SortableExample from "@/components/SortableExample";
 import { useFavorites } from "@/utils/context";
 import { FavoriteStation, cn } from "@/utils";
-import colors from "tailwindcss/colors";
 
 function SortableFavorites({
   favorites,
@@ -57,7 +56,9 @@ function SortableFavorites({
           disabled={isActive}
           className={cn(
             "flex flex-row items-center gap-2 px-4 mx-4 py-4 rounded mb-1",
-            isActive ? "bg-blue-100" : "bg-zinc-100"
+            isActive
+              ? "bg-blue-100 dark:bg-blue-900/80"
+              : "bg-zinc-100 dark:bg-zinc-900"
           )}
         >
           <Ionicons
@@ -65,7 +66,9 @@ function SortableFavorites({
             color={colors.zinc[500]}
             size={20}
           />
-          <Text className="text-zinc-900 font-bold text-xl">{item.name}</Text>
+          <Text className="text-zinc-900 dark:text-zinc-100 font-bold text-xl">
+            {item.name}
+          </Text>
         </Pressable>
       </ScaleDecorator>
     );

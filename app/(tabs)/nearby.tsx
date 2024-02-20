@@ -59,7 +59,9 @@ const NearbyStations = ({
 
             {northbound.length === 0 && southbound.length === 0 && (
               <View className="mb-4">
-                <Text className="text-base text-zinc-400">No trains found</Text>
+                <Text className="text-base text-zinc-400 dark:text-zinc-500">
+                  No trains found
+                </Text>
               </View>
             )}
 

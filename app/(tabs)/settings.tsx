@@ -9,6 +9,7 @@ import {
   GestureResponderEvent,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -135,9 +136,13 @@ const FavoriteItem = ({
         // FIXME: sometimes no routes are found
         <View className="mt-1 flex flex-row items-center gap-1">
           <View
-            className={`rounded-full items-center bg-zinc-300 justify-center h-8 w-8`}
+            className={`rounded-full items-center bg-zinc-300 dark:bg-zinc-700 justify-center h-8 w-8`}
           >
-            <Text className={`text-sm font-semibold text-zinc-100`}>!</Text>
+            <Text
+              className={`text-sm font-semibold text-zinc-100 dark:text-zinc-300`}
+            >
+              !
+            </Text>
           </View>
         </View>
       )}
@@ -189,6 +194,7 @@ export default function SettingsScreen() {
   const { favorites = [], set } = useFavorites();
   const [query, setQuery] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const colorScheme = useColorScheme();
   const {
     data: searchResults = [],
     isLoading: isLoadingSearchResults,
@@ -263,13 +269,12 @@ export default function SettingsScreen() {
           Favorites
         </Text>
         <Pressable
-          // TODO: make this easier to press!
           className="px-4"
           onPress={() => router.push(`/modals/ranking`)}
         >
           <Ionicons
             name="ellipsis-vertical"
-            color={colors.zinc[700]}
+            color={colorScheme === "dark" ? colors.zinc[300] : colors.zinc[700]}
             size={20}
           />
         </Pressable>
