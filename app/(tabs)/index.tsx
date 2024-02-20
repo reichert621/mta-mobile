@@ -23,6 +23,12 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
   });
   useRefreshOnFocus(refetch);
 
+  const settingsById = React.useMemo(() => {
+    return routes.reduce((acc, route) => {
+      return { ...acc, [route.id]: route.enabled };
+    }, {} as Record<string, any>);
+  }, [routeIds]);
+
   // console.log({
   //   isLoading,
   //   isRefetching,
@@ -37,8 +43,18 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
   return (
     <View className="px-4">
       {stations.map((station) => {
-        const northbound = station.N || [];
-        const southbound = station.S || [];
+        const enabled = settingsById[station.id] || {
+          northbound: {},
+          southbound: {},
+        };
+        const n = station.N || [];
+        const s = station.S || [];
+        const northbound = n.filter(({ route }) => {
+          return !!enabled.northbound[route];
+        });
+        const southbound = s.filter(({ route }) => {
+          return !!enabled.southbound[route];
+        });
 
         return (
           <Animated.View key={station.id} className="mb-6" entering={FadeIn}>
@@ -46,54 +62,58 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
               {station.name}
             </Text>
 
-            <View className="mb-4">
-              <View className="mb-2">
-                <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
-                  Northbound
-                </Text>
+            {northbound.length > 0 && (
+              <View className="mb-4">
+                <View className="mb-2">
+                  <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
+                    Northbound
+                  </Text>
+                </View>
+                {northbound.map(({ route, time }, key) => {
+                  return (
+                    <ScheduleItem
+                      key={key}
+                      className={isRefetching ? "opacity-80" : "opacity-100"}
+                      route={route}
+                      time={time}
+                      onPress={() =>
+                        router.push(
+                          `/modals/routes/${
+                            station.id
+                          }?route=${route}&direction=${"N"}`
+                        )
+                      }
+                    />
+                  );
+                })}
               </View>
-              {northbound.map(({ route, time }, key) => {
-                return (
-                  <ScheduleItem
-                    key={key}
-                    className={isRefetching ? "opacity-80" : "opacity-100"}
-                    route={route}
-                    time={time}
-                    onPress={() =>
-                      router.push(
-                        `/modals/routes/${
-                          station.id
-                        }?route=${route}&direction=${"N"}`
-                      )
-                    }
-                  />
-                );
-              })}
-            </View>
-            <View className="mb-4">
-              <View className="mb-2">
-                <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
-                  Southbound
-                </Text>
+            )}
+            {southbound.length > 0 && (
+              <View className="mb-4">
+                <View className="mb-2">
+                  <Text className="text-lg font-medium text-zinc-500 dark:text-zinc-400">
+                    Southbound
+                  </Text>
+                </View>
+                {southbound.map(({ route, time }, key) => {
+                  return (
+                    <ScheduleItem
+                      key={key}
+                      className={isRefetching ? "opacity-80" : "opacity-100"}
+                      route={route}
+                      time={time}
+                      onPress={() =>
+                        router.push(
+                          `/modals/routes/${
+                            station.id
+                          }?route=${route}&direction=${"S"}`
+                        )
+                      }
+                    />
+                  );
+                })}
               </View>
-              {southbound.map(({ route, time }, key) => {
-                return (
-                  <ScheduleItem
-                    key={key}
-                    className={isRefetching ? "opacity-80" : "opacity-100"}
-                    route={route}
-                    time={time}
-                    onPress={() =>
-                      router.push(
-                        `/modals/routes/${
-                          station.id
-                        }?route=${route}&direction=${"S"}`
-                      )
-                    }
-                  />
-                );
-              })}
-            </View>
+            )}
           </Animated.View>
         );
       })}

@@ -6,6 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export type FavoriteStationSettings = {
+  northbound: Record<string, boolean>;
+  southbound: Record<string, boolean>;
+};
 export type FavoriteStation = {
   id: string;
   name: string;
@@ -15,6 +19,8 @@ export type FavoriteStation = {
   active?: boolean;
   northbound?: boolean;
   southbound?: boolean;
+  // TODO: figure out how to model this
+  enabled: FavoriteStationSettings;
 };
 
 export const DEFAULT_FAVORITES: FavoriteStation[] = [
@@ -23,24 +29,20 @@ export const DEFAULT_FAVORITES: FavoriteStation[] = [
     location: [40.690635, -73.981824],
     name: "DeKalb Av",
     active: true,
-    northbound: true,
-    southbound: false,
-  },
-  {
-    id: "289d",
-    location: [40.688246, -73.980492],
-    name: "Nevins St",
-    active: true,
-    northbound: true,
-    southbound: false,
+    enabled: {
+      northbound: {},
+      southbound: {},
+    },
   },
   {
     id: "ec1f",
     location: [40.688484, -73.985001],
     name: "Hoyt-Schermerhorn Sts",
     active: true,
-    northbound: true,
-    southbound: false,
+    enabled: {
+      northbound: {},
+      southbound: {},
+    },
   },
 ];
 

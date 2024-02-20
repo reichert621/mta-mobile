@@ -47,7 +47,7 @@ export default function RouteModal() {
 
   return (
     <ScrollView className="bg-white dark:bg-zinc-950">
-      <View className="mb-8 p-4 bg-zinc-100">
+      <View className="mb-8 p-4 bg-zinc-100 dark:bg-zinc-900">
         <Link href="../">
           <Text className="text-blue-500 font-medium">Close</Text>
         </Link>
@@ -73,7 +73,7 @@ export default function RouteModal() {
           );
         })}
 
-        <View className="mt-8 pt-8 border-t border-zinc-100 gap-2">
+        <View className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800 gap-2">
           <Pressable
             className="flex flex-row gap-2 items-center justify-center border border-zinc-700 bg-zinc-800 rounded px-4 py-3"
             onPress={() => alert("Coming soon!")}

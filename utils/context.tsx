@@ -12,6 +12,7 @@ type ContextProps = {
   error: any;
   refresh: () => Promise<any>;
   set: (favorites: FavoriteStation[]) => Promise<any>;
+  update: (id: string, params: Partial<FavoriteStation>) => Promise<any>;
 };
 
 export const FavoritesContext = React.createContext<ContextProps>({
@@ -20,6 +21,7 @@ export const FavoritesContext = React.createContext<ContextProps>({
   favorites: [],
   refresh: () => Promise.resolve(),
   set: () => Promise.resolve(),
+  update: () => Promise.resolve(),
 });
 
 export const useFavorites = () => React.useContext(FavoritesContext);
@@ -73,12 +75,34 @@ export const FavoritesProvider = ({
     }
   };
 
+  const update = async (id: string, updates: Partial<FavoriteStation>) => {
+    try {
+      const current = await getCachedFavorites();
+      const updated = current.map((r) => {
+        if (r.id === id) {
+          return { ...r, ...updates };
+        }
+
+        return r;
+      });
+
+      await setCachedFavorites(updated);
+      const cached = await getCachedFavorites();
+
+      setFavorites(cached);
+    } catch (err) {
+      console.error("Failed to set cached favorites:", err);
+      setError(err);
+    }
+  };
+
   const value: ContextProps = {
     isLoading,
     error,
     favorites,
     refresh,
     set,
+    update,
   };
 
   return (

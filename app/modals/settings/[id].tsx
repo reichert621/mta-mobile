@@ -68,7 +68,7 @@ export default function RouteModal() {
   const id = params.id as string;
 
   // TODO: include route selection in favorites
-  const { favorites } = useFavorites();
+  const { favorites, isLoading: isLoadingFavorites, update } = useFavorites();
   const {
     data: station,
     isLoading,
@@ -78,30 +78,58 @@ export default function RouteModal() {
     refetchInterval: 10000,
   });
 
-  if (isLoading || !station) {
+  const favorite = favorites.find((f) => f.id === id);
+  console.log("Current favorite:", favorite);
+
+  React.useEffect(() => {
+    if (favorite) {
+      setEnabledRoutes(favorite.enabled || empty);
+    }
+  }, [favorite]);
+
+  if (isLoading || isLoadingFavorites || !station || !favorite) {
     return null;
   }
 
   const { routes = [] } = station;
 
   // TODO: implement actually storing this!
-  const handleToggleRoute = (
+  const handleToggleRoute = async (
     route: string,
     direction: "northbound" | "southbound"
   ) => {
-    setEnabledRoutes((current) => {
-      const isCurrentlyEnabled = current[direction][route];
+    const isCurrentlyEnabled = enabled[direction][route];
 
-      return {
-        ...current,
-        [direction]: { ...current[direction], [route]: !isCurrentlyEnabled },
-      };
-    });
+    try {
+      if (!favorite) {
+        throw new Error("Invalid favorite");
+      }
+
+      setEnabledRoutes({
+        ...enabled,
+        [direction]: { ...enabled[direction], [route]: !isCurrentlyEnabled },
+      });
+
+      const current = favorite!.enabled[direction];
+      const updates = { ...current, [route]: !current[route] };
+      console.log({ favorite, current, updates });
+
+      await update(id, {
+        enabled: { ...favorite.enabled, [direction]: updates },
+      });
+    } catch (e) {
+      console.error("Failed to update route settings!", e);
+      // Reset optimistic update
+      setEnabledRoutes({
+        ...enabled,
+        [direction]: { ...enabled[direction], [route]: isCurrentlyEnabled },
+      });
+    }
   };
 
   return (
     <ScrollView className="bg-white dark:bg-zinc-950">
-      <View className="mb-8 p-4 bg-zinc-100">
+      <View className="mb-8 p-4 bg-zinc-100 dark:bg-zinc-900">
         <Link href="../">
           <Text className="text-blue-500 font-medium">Close</Text>
         </Link>
@@ -124,11 +152,12 @@ export default function RouteModal() {
               .sort((a, b) => a.localeCompare(b))
               .map((route, key) => {
                 const isEnabled = enabled.northbound[route];
+                // const isEnabled = favorite?.enabled?.northbound[route];
 
                 return (
                   <View
                     key={key}
-                    className="flex px-2 py-1.5 rounded-lg bg-zinc-50 flex-row items-center justify-between"
+                    className="flex px-2 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 flex-row items-center justify-between"
                   >
                     <View className="flex flex-row items-center gap-4">
                       <RouteIcon
@@ -139,7 +168,7 @@ export default function RouteModal() {
                       <Text
                         className={
                           isEnabled
-                            ? "text-zinc-700 font-medium"
+                            ? "text-zinc-700 dark:text-zinc-300 font-medium"
                             : "text-zinc-400"
                         }
                       >
@@ -170,11 +199,12 @@ export default function RouteModal() {
               .sort((a, b) => a.localeCompare(b))
               .map((route, key) => {
                 const isEnabled = enabled.southbound[route];
+                // const isEnabled = favorite?.enabled?.southbound[route];
 
                 return (
                   <View
                     key={key}
-                    className="flex px-2 py-1.5 rounded-lg bg-zinc-50 flex-row items-center justify-between"
+                    className="flex px-2 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-900 flex-row items-center justify-between"
                   >
                     <View className="flex flex-row items-center gap-4">
                       <RouteIcon
@@ -185,7 +215,7 @@ export default function RouteModal() {
                       <Text
                         className={
                           isEnabled
-                            ? "text-zinc-700 font-medium"
+                            ? "text-zinc-700 dark:text-zinc-300 font-medium"
                             : "text-zinc-400"
                         }
                       >

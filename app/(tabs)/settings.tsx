@@ -10,18 +10,17 @@ import {
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "tailwindcss/colors";
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import useDebounce from "react-use/esm/useDebounce";
 
 import { SafeScrollView, SafeView } from "@/components/SafeView";
 import { useFavorites } from "@/utils/context";
-import { FavoriteStation, getColorByRoute } from "@/utils";
+import {
+  FavoriteStation,
+  FavoriteStationSettings,
+  cn,
+  getColorByRoute,
+} from "@/utils";
 import { StationSchedule, useStationsByQuery } from "@/utils/api";
 import SwipeToDeleteRow from "@/components/swipeable/SwipeToDeleteRow";
 import SlideToDelete from "@/components/swipeable/SlideToDelete";
@@ -66,8 +65,26 @@ const _AnimatedFavoriteItem = ({
   );
 };
 
+const getEnabledOpacityClass = (
+  route: string,
+  enabled: FavoriteStationSettings
+) => {
+  const { northbound = {}, southbound = {} } = enabled;
+
+  const isNorthboundEnabled = northbound[route];
+  const isSouthboundEnabled = southbound[route];
+
+  if (isNorthboundEnabled && isSouthboundEnabled) {
+    return "opacity-100";
+  } else if (isNorthboundEnabled || isSouthboundEnabled) {
+    return "opacity-80";
+  } else {
+    return "opacity-40";
+  }
+};
+
 const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
-  const { routes = [] } = station;
+  const { routes = [], enabled } = station;
 
   return (
     <Pressable
@@ -83,13 +100,18 @@ const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
         <View className="mt-1 flex flex-row items-center gap-1">
           {routes.map((r) => {
             const [bg, text] = getColorByRoute(r);
+            const opacity = getEnabledOpacityClass(r, enabled);
 
             return (
               <View
                 key={r}
-                className={`${bg} rounded-full items-center justify-center h-8 w-8`}
+                className={cn(
+                  `rounded-full items-center justify-center h-8 w-8`,
+                  bg,
+                  opacity
+                )}
               >
-                <Text className={`${text} text-sm font-semibold`}>{r}</Text>
+                <Text className={cn(`text-sm font-semibold`, text)}>{r}</Text>
               </View>
             );
           })}
@@ -176,6 +198,10 @@ export default function SettingsScreen() {
       return;
     }
 
+    const enabled = routes.reduce((acc, r) => {
+      return { ...acc, [r]: true };
+    }, {});
+
     await set(
       favorites.concat({
         id,
@@ -183,8 +209,10 @@ export default function SettingsScreen() {
         routes,
         location,
         active: true,
-        northbound: true,
-        southbound: true,
+        enabled: {
+          northbound: enabled,
+          southbound: enabled,
+        },
       })
     );
   };
