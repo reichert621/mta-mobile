@@ -34,6 +34,7 @@ import {
 import { StationSchedule, useStationsByQuery } from "@/utils/api";
 import SwipeToDeleteRow from "@/components/swipeable/SwipeToDeleteRow";
 import SlideToDelete from "@/components/swipeable/SlideToDelete";
+import { useScaleAnimation } from "@/utils/animation";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -101,51 +102,58 @@ const FavoriteItem = ({
   onPress: (e: GestureResponderEvent) => void;
 }) => {
   const { routes = [], enabled = EMPTY_SETTINGS } = station;
+  const [animatedStyle, { onPressIn, onPressOut }] = useScaleAnimation({
+    range: [1, 0.97],
+  });
 
   return (
     <Pressable
       className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2"
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       onPress={onPress}
     >
-      <View className="flex flex-row items-center justify-between">
-        <Text className="text-xl font-medium dark:text-zinc-300">
-          {station.name}
-        </Text>
-      </View>
-      {routes.length > 0 ? (
-        <View className="mt-1 flex flex-row items-center gap-1">
-          {routes.map((r) => {
-            const [bg, text] = getColorByRoute(r);
-            const opacity = getEnabledOpacityClass(r, enabled);
+      <Animated.View style={[animatedStyle]}>
+        <View className="flex flex-row items-center justify-between">
+          <Text className="text-xl font-medium dark:text-zinc-300">
+            {station.name}
+          </Text>
+        </View>
+        {routes.length > 0 ? (
+          <View className="mt-1 flex flex-row items-center gap-1">
+            {routes.map((r) => {
+              const [bg, text] = getColorByRoute(r);
+              const opacity = getEnabledOpacityClass(r, enabled);
 
-            return (
-              <View
-                key={r}
-                className={cn(
-                  `rounded-full items-center justify-center h-8 w-8`,
-                  bg,
-                  opacity
-                )}
-              >
-                <Text className={cn(`text-sm font-semibold`, text)}>{r}</Text>
-              </View>
-            );
-          })}
-        </View>
-      ) : (
-        // FIXME: sometimes no routes are found
-        <View className="mt-1 flex flex-row items-center gap-1">
-          <View
-            className={`rounded-full items-center bg-zinc-300 dark:bg-zinc-700 justify-center h-8 w-8`}
-          >
-            <Text
-              className={`text-sm font-semibold text-zinc-100 dark:text-zinc-300`}
-            >
-              !
-            </Text>
+              return (
+                <View
+                  key={r}
+                  className={cn(
+                    `rounded-full items-center justify-center h-8 w-8`,
+                    bg,
+                    opacity
+                  )}
+                >
+                  <Text className={cn(`text-sm font-semibold`, text)}>{r}</Text>
+                </View>
+              );
+            })}
           </View>
-        </View>
-      )}
+        ) : (
+          // FIXME: sometimes no routes are found
+          <View className="mt-1 flex flex-row items-center gap-1">
+            <View
+              className={`rounded-full items-center bg-zinc-300 dark:bg-zinc-700 justify-center h-8 w-8`}
+            >
+              <Text
+                className={`text-sm font-semibold text-zinc-100 dark:text-zinc-300`}
+              >
+                !
+              </Text>
+            </View>
+          </View>
+        )}
+      </Animated.View>
     </Pressable>
   );
 };
