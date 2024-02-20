@@ -90,7 +90,7 @@ const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
   return (
     <Pressable
       className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2"
-      // onPress={() => router.push(`/modals/settings/${station.id}`)}
+      onPress={() => router.push(`/modals/settings/${station.id}`)}
     >
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-medium dark:text-zinc-300">
