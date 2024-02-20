@@ -62,6 +62,14 @@ const TrainSchedules = ({ routes }: { routes: FavoriteStation[] }) => {
               {station.name}
             </Text>
 
+            {northbound.length === 0 && southbound.length === 0 && (
+              <View className="mb-4">
+                <Text className="text-base text-zinc-400 dark:text-zinc-500">
+                  No trains found
+                </Text>
+              </View>
+            )}
+
             {northbound.length > 0 && (
               <View className="mb-4">
                 <View className="mb-2">

@@ -9,6 +9,7 @@ import {
   GestureResponderEvent,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -111,7 +112,7 @@ const FavoriteItem = ({
           {station.name}
         </Text>
       </View>
-      {routes.length > 0 && (
+      {routes.length > 0 ? (
         <View className="mt-1 flex flex-row items-center gap-1">
           {routes.map((r) => {
             const [bg, text] = getColorByRoute(r);
@@ -130,6 +131,19 @@ const FavoriteItem = ({
               </View>
             );
           })}
+        </View>
+      ) : (
+        // FIXME: sometimes no routes are found
+        <View className="mt-1 flex flex-row items-center gap-1">
+          <View
+            className={`rounded-full items-center bg-zinc-300 dark:bg-zinc-700 justify-center h-8 w-8`}
+          >
+            <Text
+              className={`text-sm font-semibold text-zinc-100 dark:text-zinc-300`}
+            >
+              !
+            </Text>
+          </View>
         </View>
       )}
     </Pressable>
@@ -180,6 +194,7 @@ export default function SettingsScreen() {
   const { favorites = [], set } = useFavorites();
   const [query, setQuery] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const colorScheme = useColorScheme();
   const {
     data: searchResults = [],
     isLoading: isLoadingSearchResults,
@@ -249,10 +264,20 @@ export default function SettingsScreen() {
       keyboardOpeningTime={0}
       extraScrollHeight={80}
     >
-      <View className="mt-12 mb-4 px-4">
-        <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
+      <View className="mt-12 mb-4 flex flex-row justify-between items-center">
+        <Text className="font-bold mx-4 text-zinc-900 dark:text-zinc-100 text-4xl">
           Favorites
         </Text>
+        <Pressable
+          className="px-4"
+          onPress={() => router.push(`/modals/ranking`)}
+        >
+          <Ionicons
+            name="ellipsis-vertical"
+            color={colorScheme === "dark" ? colors.zinc[300] : colors.zinc[700]}
+            size={20}
+          />
+        </Pressable>
       </View>
 
       <View className="">
