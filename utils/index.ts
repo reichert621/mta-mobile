@@ -57,8 +57,15 @@ const CACHE_KEY = "__mta:favorites";
 export const getCachedFavorites = async (): Promise<FavoriteStation[]> => {
   try {
     const data = await AsyncStorage.getItem(CACHE_KEY);
-    const json = data ? JSON.parse(data) : DEFAULT_FAVORITES;
-    const favorites = json.filter((d: any) => d.id && d.name);
+    const json: FavoriteStation[] = data ? JSON.parse(data) : DEFAULT_FAVORITES;
+    const favorites = json
+      .filter((d: any) => d.id && d.name)
+      .sort((a, b) => {
+        const { rank: rankA = Infinity } = a;
+        const { rank: rankB = Infinity } = b;
+
+        return rankA - rankB;
+      });
 
     return favorites;
   } catch (e) {

@@ -97,6 +97,10 @@ function RootLayoutNav() {
                 name="modals/settings/[id]"
                 options={{ presentation: "modal", headerShown: false }}
               />
+              <Stack.Screen
+                name="modals/ranking"
+                options={{ presentation: "modal", headerShown: false }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </FavoritesProvider>
