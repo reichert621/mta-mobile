@@ -9,6 +9,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import React from "react";
 import { router } from "expo-router";
 import * as Location from "expo-location";
+import { keepPreviousData } from "@tanstack/react-query";
 
 import { cn } from "@/utils";
 import { SafeScrollView } from "@/components/SafeView";
@@ -27,9 +28,11 @@ const NearbyStations = ({
     data: stations = [],
     isLoading,
     isRefetching,
+    isPlaceholderData,
     error,
     refetch,
   } = useStationsByLocation(latitude, longitude, {
+    placeholderData: keepPreviousData,
     refetchInterval: 10000,
   });
   useRefreshOnFocus(refetch);
@@ -37,13 +40,10 @@ const NearbyStations = ({
   // console.log({
   //   isLoading,
   //   isRefetching,
+  //   isPlaceholderData,
   //   error,
   //   stations: stations.length,
   // });
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <View className="px-4">

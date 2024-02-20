@@ -155,6 +155,7 @@ export function useStationsByLocation(
     isLoading,
     isFetching,
     isRefetching,
+    isPlaceholderData,
     error,
     data,
     refetch,
@@ -165,7 +166,15 @@ export function useStationsByLocation(
     ...options,
   });
 
-  return { data, error, isPending, isLoading, isRefetching, refetch };
+  return {
+    data,
+    error,
+    isPending,
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+    refetch,
+  };
 }
 
 export const fetchStationById = async (
