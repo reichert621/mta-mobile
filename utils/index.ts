@@ -35,6 +35,7 @@ export const DEFAULT_FAVORITES: FavoriteStation[] = [
     location: [40.690635, -73.981824],
     name: "DeKalb Av",
     active: true,
+    rank: 1,
     routes: ["B", "Q", "R"],
     enabled: {
       northbound: { B: true, Q: true },
@@ -46,6 +47,7 @@ export const DEFAULT_FAVORITES: FavoriteStation[] = [
     location: [40.688484, -73.985001],
     name: "Hoyt-Schermerhorn Sts",
     active: true,
+    rank: 2,
     routes: ["C", "G", "A"],
     enabled: {
       northbound: { G: true, A: true, C: true },
@@ -80,6 +82,14 @@ export const setCachedFavorites = async (favorites: FavoriteStation[]) => {
     await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(favorites));
   } catch (e) {
     console.warn("Failed to save favorites:", e);
+  }
+};
+
+export const clearCachedFavorites = async () => {
+  try {
+    await AsyncStorage.removeItem(CACHE_KEY);
+  } catch (e) {
+    console.warn("Failed to clear favorites:", e);
   }
 };
 

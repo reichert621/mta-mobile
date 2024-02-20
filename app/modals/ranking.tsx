@@ -1,14 +1,13 @@
 import React from "react";
-import { FontAwesome, FontAwesome6, Ionicons } from "@expo/vector-icons";
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Link, router } from "expo-router";
 import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
-  TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,7 +17,6 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import colors from "tailwindcss/colors";
 
-import { SafeScrollView, SafeView } from "@/components/SafeView";
 import { useFavorites } from "@/utils/context";
 import { FavoriteStation, cn } from "@/utils";
 
@@ -86,7 +84,9 @@ function SortableFavorites({
 
 export default function RankingModal() {
   const isPresented = router.canGoBack();
-  const { favorites = [], set } = useFavorites();
+  const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
+  const { favorites = [], set, clear } = useFavorites();
 
   const handleUpdateFavorites = async (updated: FavoriteStation[]) => {
     try {
@@ -98,6 +98,15 @@ export default function RankingModal() {
       console.log("Successfully updated rankings!");
     } catch (err) {
       console.error("Failed to update!", err);
+    }
+  };
+
+  const handleResetFavorites = async () => {
+    try {
+      await clear();
+      alert("Your favorites have been reset to the defaults.");
+    } catch (e) {
+      console.error("Failed to reset favorites:", e);
     }
   };
 
@@ -125,6 +134,24 @@ export default function RankingModal() {
           />
         )}
       </Animated.View>
+      <View
+        className="px-4 mb-8 justify-end flex-1"
+        style={{ paddingBottom: insets.bottom }}
+      >
+        <Pressable
+          className="flex flex-row gap-2 items-center justify-center border border-red-500 dark:border-red-700 dark:bg-red-800/80 rounded px-4 py-3"
+          onPress={handleResetFavorites}
+        >
+          <Ionicons
+            name="trash"
+            color={colorScheme === "dark" ? colors.red[200] : colors.red[500]}
+            size={16}
+          />
+          <Text className="text-red-500 dark:text-red-100 font-medium">
+            Reset favorites
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
