@@ -46,7 +46,11 @@ const ScheduleItem = ({
         >
           <Text className={`${text} text-sm font-bold`}>{route}</Text>
         </View>
-        {mins === 0 ? (
+        {secs < 15 ? (
+          <Text className="text-red-700 dark:text-red-300 font-medium text-base">
+            Arriving soon
+          </Text>
+        ) : mins < 1 ? (
           <Text className="text-red-700 dark:text-red-300 font-medium text-base">
             {Math.abs(secs)} {Math.abs(secs) === 1 ? "second" : "seconds"}{" "}
             {secs < 0 ? "ago" : "away"}

@@ -15,7 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const DELETE_THRESHOLD = -SCREEN_WIDTH * 0.5;
+const DELETE_THRESHOLD = -SCREEN_WIDTH * 0.4;
 
 const SlideToDelete = ({
   initialHeight,
