@@ -264,7 +264,7 @@ export default function SettingsScreen() {
       keyboardOpeningTime={0}
       extraScrollHeight={80}
     >
-      <View className="mt-12 mb-4 _px-4 flex flex-row justify-between items-center">
+      <View className="mt-12 mb-4 flex flex-row justify-between items-center">
         <Text className="font-bold mx-4 text-zinc-900 dark:text-zinc-100 text-4xl">
           Favorites
         </Text>
