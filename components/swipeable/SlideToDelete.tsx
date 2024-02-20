@@ -40,7 +40,7 @@ const SlideToDelete = ({
       initialTouchLocation.value = { x: e.x, y: e.y };
     })
     .onTouchesMove((e, state) => {
-      // Sanity checks
+      // See: https://github.com/software-mansion/react-native-gesture-handler/issues/1933#issuecomment-1566953466
       if (!initialTouchLocation.value || !e.changedTouches.length) {
         state.fail();
 
