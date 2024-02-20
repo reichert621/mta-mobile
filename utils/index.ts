@@ -10,6 +10,12 @@ export type FavoriteStationSettings = {
   northbound: Record<string, boolean>;
   southbound: Record<string, boolean>;
 };
+
+export const EMPTY_SETTINGS: FavoriteStationSettings = {
+  northbound: {},
+  southbound: {},
+};
+
 export type FavoriteStation = {
   id: string;
   name: string;

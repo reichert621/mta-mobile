@@ -16,6 +16,7 @@ import useDebounce from "react-use/esm/useDebounce";
 import { SafeScrollView, SafeView } from "@/components/SafeView";
 import { useFavorites } from "@/utils/context";
 import {
+  EMPTY_SETTINGS,
   FavoriteStation,
   FavoriteStationSettings,
   cn,
@@ -84,12 +85,12 @@ const getEnabledOpacityClass = (
 };
 
 const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
-  const { routes = [], enabled } = station;
+  const { routes = [], enabled = EMPTY_SETTINGS } = station;
 
   return (
     <Pressable
       className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2"
-      onPress={() => router.push(`/modals/settings/${station.id}`)}
+      // onPress={() => router.push(`/modals/settings/${station.id}`)}
     >
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-medium dark:text-zinc-300">
