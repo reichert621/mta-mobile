@@ -40,7 +40,16 @@ export default function RouteModal() {
   });
 
   if (isLoading || !station) {
-    return null;
+    // TODO: return better loading state
+    return (
+      <ScrollView className="bg-white dark:bg-zinc-950">
+        <View className="mb-8 p-4 bg-zinc-100 dark:bg-zinc-900">
+          <Link href="../">
+            <Text className="text-blue-500 font-medium">Close</Text>
+          </Link>
+        </View>
+      </ScrollView>
+    );
   }
 
   const times = (station[direction] || []).filter((t) => t.route === route);

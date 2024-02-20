@@ -6,6 +6,7 @@ import {
   View,
   ActivityIndicator,
   Dimensions,
+  GestureResponderEvent,
 } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -84,13 +85,19 @@ const getEnabledOpacityClass = (
   }
 };
 
-const FavoriteItem = ({ station }: { station: FavoriteStation }) => {
+const FavoriteItem = ({
+  station,
+  onPress,
+}: {
+  station: FavoriteStation;
+  onPress: (e: GestureResponderEvent) => void;
+}) => {
   const { routes = [], enabled = EMPTY_SETTINGS } = station;
 
   return (
     <Pressable
       className="ml-4 border-b border-zinc-100 dark:border-zinc-900 py-4 px-2"
-      onPress={() => router.push(`/modals/settings/${station.id}`)}
+      onPress={onPress}
     >
       <View className="flex flex-row items-center justify-between">
         <Text className="text-xl font-medium dark:text-zinc-300">
@@ -248,7 +255,19 @@ export default function SettingsScreen() {
               // TODO: rename?
               onDelete={() => toggle(station)}
             >
-              <FavoriteItem station={station} />
+              {(isPanning) => (
+                <FavoriteItem
+                  station={station}
+                  onPress={(e) => {
+                    // console.log("Pressed!");
+                    if (isPanning) {
+                      e.preventDefault();
+                    } else {
+                      router.push(`/modals/settings/${station.id}`);
+                    }
+                  }}
+                />
+              )}
             </SlideToDelete>
           );
         })}

@@ -23,14 +23,19 @@ const SlideToDelete = ({
   onDelete,
 }: {
   initialHeight: number;
-  children: React.ReactNode;
+  children: (isPanning: boolean) => React.ReactNode;
   onDelete: () => void;
 }) => {
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(initialHeight); // TODO: figure out best approach here
   const opacity = useSharedValue(1);
+  const [isPanning, setPanningState] = React.useState(false);
 
   const gesture = Gesture.Pan()
+    .onStart(() => {
+      // If we don't run on JS, this will crash the app
+      runOnJS(setPanningState)(true);
+    })
     .onUpdate((event) => {
       // console.log("onUpdate!", event);
       translateX.value = event.translationX;
@@ -49,6 +54,8 @@ const SlideToDelete = ({
       } else {
         translateX.value = withTiming(0);
       }
+
+      runOnJS(setPanningState)(false);
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -70,6 +77,8 @@ const SlideToDelete = ({
     };
   });
 
+  // console.log({ isPanning });
+
   return (
     <View>
       <Animated.View
@@ -84,7 +93,7 @@ const SlideToDelete = ({
           entering={FadeIn}
           // exiting={FadeOut}
         >
-          {children}
+          {children(isPanning)}
         </Animated.View>
       </GestureDetector>
     </View>

@@ -76,7 +76,7 @@ export default function RouteModal() {
   });
 
   const favorite = favorites.find((f) => f.id === id);
-  console.log("Current favorite:", favorite);
+  // console.log("Current favorite:", favorite);
 
   React.useEffect(() => {
     if (favorite) {
@@ -85,7 +85,16 @@ export default function RouteModal() {
   }, [favorite]);
 
   if (isLoading || isLoadingFavorites || !station || !favorite) {
-    return null;
+    // TODO: return better loading state
+    return (
+      <ScrollView className="bg-white dark:bg-zinc-950">
+        <View className="mb-8 p-4 bg-zinc-100 dark:bg-zinc-900">
+          <Link href="../">
+            <Text className="text-blue-500 font-medium">Close</Text>
+          </Link>
+        </View>
+      </ScrollView>
+    );
   }
 
   const { routes = [] } = station;
