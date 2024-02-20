@@ -18,7 +18,7 @@ export function useScaleAnimation({
   const animatedStyle = useAnimatedStyle(() => {
     const value = interpolate(
       scale.value,
-      [0, 1], // Input range: corresponds to scale.value range
+      [0, 1], // input range: corresponds to scale.value range
       range
     );
 
@@ -28,15 +28,12 @@ export function useScaleAnimation({
   });
 
   const onPressIn = () => {
-    // withSpring to animate the scale value on press in
     scale.value = withSpring(1, config);
   };
 
   const onPressOut = () => {
-    // withSpring to animate the scale value back to 0 on press out
     scale.value = withSpring(0, config);
   };
 
-  // Return the animated style and press handlers
   return [animatedStyle, { onPressIn, onPressOut }];
 }
