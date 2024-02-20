@@ -5,7 +5,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Switch,
   Text,
   View,
@@ -14,9 +13,12 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "tailwindcss/colors";
 
-import { SafeScrollView, SafeView } from "@/components/SafeView";
-import ScheduleItem from "@/components/ScheduleItem";
-import { cn, getColorByRoute } from "@/utils";
+import {
+  EMPTY_SETTINGS,
+  FavoriteStationSettings,
+  cn,
+  getColorByRoute,
+} from "@/utils";
 import { useStationById } from "@/utils/api";
 import { useFavorites } from "@/utils/context";
 
@@ -53,17 +55,12 @@ const RouteIcon = ({
   );
 };
 
-type EnabledRoutes = {
-  northbound: Record<string, boolean>;
-  southbound: Record<string, boolean>;
-};
-const empty: EnabledRoutes = { northbound: {}, southbound: {} };
-
 export default function RouteModal() {
   const isPresented = router.canGoBack();
   const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
-  const [enabled, setEnabledRoutes] = React.useState<EnabledRoutes>(empty);
+  const [enabled, setEnabledRoutes] =
+    React.useState<FavoriteStationSettings>(EMPTY_SETTINGS);
 
   const id = params.id as string;
 
@@ -83,7 +80,7 @@ export default function RouteModal() {
 
   React.useEffect(() => {
     if (favorite) {
-      setEnabledRoutes(favorite.enabled || empty);
+      setEnabledRoutes(favorite.enabled || EMPTY_SETTINGS);
     }
   }, [favorite]);
 
