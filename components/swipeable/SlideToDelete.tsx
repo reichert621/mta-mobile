@@ -29,9 +29,35 @@ const SlideToDelete = ({
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(initialHeight); // TODO: figure out best approach here
   const opacity = useSharedValue(1);
+  const initialTouchLocation = useSharedValue<{ x: number; y: number } | null>(
+    null
+  );
   const [isPanning, setPanningState] = React.useState(false);
 
   const gesture = Gesture.Pan()
+    .manualActivation(true)
+    .onBegin((e) => {
+      initialTouchLocation.value = { x: e.x, y: e.y };
+    })
+    .onTouchesMove((e, state) => {
+      // Sanity checks
+      if (!initialTouchLocation.value || !e.changedTouches.length) {
+        state.fail();
+
+        return;
+      }
+
+      const [touch] = e.changedTouches;
+      const xDiff = Math.abs(touch.x - initialTouchLocation.value.x);
+      const yDiff = Math.abs(touch.y - initialTouchLocation.value.y);
+      const isHorizontalPanning = xDiff > yDiff;
+
+      if (isHorizontalPanning) {
+        state.activate();
+      } else {
+        state.fail();
+      }
+    })
     .onStart(() => {
       // If we don't run on JS, this will crash the app
       runOnJS(setPanningState)(true);
@@ -48,14 +74,18 @@ const SlideToDelete = ({
         itemHeight.value = withTiming(0);
         opacity.value = withTiming(0, undefined, (isFinished) => {
           if (isFinished) {
+            // TODO: should these be combined?
             runOnJS(onDelete)();
+            runOnJS(setPanningState)(false);
           }
         });
       } else {
-        translateX.value = withTiming(0);
+        translateX.value = withTiming(0, undefined, (isFinished) => {
+          if (isFinished) {
+            runOnJS(setPanningState)(false);
+          }
+        });
       }
-
-      runOnJS(setPanningState)(false);
     });
 
   const animatedStyle = useAnimatedStyle(() => ({

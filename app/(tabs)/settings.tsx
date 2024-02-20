@@ -7,14 +7,21 @@ import {
   ActivityIndicator,
   Dimensions,
   GestureResponderEvent,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "tailwindcss/colors";
 import Animated from "react-native-reanimated";
 import useDebounce from "react-use/esm/useDebounce";
+import { keepPreviousData } from "@tanstack/react-query";
 
-import { SafeScrollView, SafeView } from "@/components/SafeView";
+import {
+  SafeScrollView,
+  SafeView,
+  SafeKeyboardAwareScrollView,
+} from "@/components/SafeView";
 import { useFavorites } from "@/utils/context";
 import {
   EMPTY_SETTINGS,
@@ -138,7 +145,6 @@ const SearchResultItem = ({
 }) => {
   return (
     <Pressable
-      key={station.id}
       className="border-b border-zinc-100 dark:border-zinc-900 py-3 px-2"
       onPress={onPress}
     >
@@ -175,17 +181,23 @@ export default function SettingsScreen() {
   const [query, setQuery] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
   const {
-    data: results = [],
+    data: searchResults = [],
     isLoading: isLoadingSearchResults,
     error: searchError,
-  } = useStationsByQuery(searchQuery);
-  const [, cancel] = useDebounce(() => setSearchQuery(query), 800, [query]);
+  } = useStationsByQuery(searchQuery, {
+    placeholderData: keepPreviousData,
+  });
+  const [, cancel] = useDebounce(() => setSearchQuery(query.trim()), 800, [
+    query,
+  ]);
 
   const favoritesById = React.useMemo(() => {
     return favorites.reduce((acc, record) => {
       return { ...acc, [record.id]: record };
     }, {} as Record<string, FavoriteStation>);
   }, [favorites]);
+
+  const results = searchResults.filter((r) => !favoritesById[r.id]);
 
   const toggle = async (route: FavoriteStation) => {
     const isFavorited = !!favoritesById[route.id];
@@ -232,9 +244,10 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeScrollView
+    <SafeKeyboardAwareScrollView
       className="bg-white dark:bg-zinc-950"
-      automaticallyAdjustKeyboardInsets
+      keyboardOpeningTime={0}
+      extraScrollHeight={80}
     >
       <View className="mt-12 mb-4 px-4">
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
@@ -255,19 +268,22 @@ export default function SettingsScreen() {
               // TODO: rename?
               onDelete={() => toggle(station)}
             >
-              {(isPanning) => (
-                <FavoriteItem
-                  station={station}
-                  onPress={(e) => {
-                    // console.log("Pressed!");
-                    if (isPanning) {
-                      e.preventDefault();
-                    } else {
-                      router.push(`/modals/settings/${station.id}`);
-                    }
-                  }}
-                />
-              )}
+              {(isPanning) => {
+                // console.log({ isPanning })
+                return (
+                  <FavoriteItem
+                    station={station}
+                    onPress={(e) => {
+                      // console.log("Pressed!");
+                      if (isPanning) {
+                        e.preventDefault();
+                      } else {
+                        router.push(`/modals/settings/${station.id}`);
+                      }
+                    }}
+                  />
+                );
+              }}
             </SlideToDelete>
           );
         })}
@@ -306,12 +322,17 @@ export default function SettingsScreen() {
             />
           );
         })}
+        {!!searchQuery && results.length === 0 && (
+          <View className="p-8 justify-center items-center">
+            <Text className="text-zinc-500 text-base">No stations found.</Text>
+          </View>
+        )}
         {isLoadingSearchResults && (
           <View className="flex-1 justify-center items-center py-12">
             <ActivityIndicator />
           </View>
         )}
       </View>
-    </SafeScrollView>
+    </SafeKeyboardAwareScrollView>
   );
 }
