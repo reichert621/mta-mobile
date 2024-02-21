@@ -55,7 +55,7 @@ function SortableFavorites({
           className={cn(
             "flex flex-row items-center gap-2 px-4 mx-4 py-4 rounded mb-1",
             isActive
-              ? "bg-blue-100 dark:bg-blue-900/80"
+              ? "bg-zinc-200 dark:bg-zinc-800"
               : "bg-zinc-100 dark:bg-zinc-900"
           )}
         >
