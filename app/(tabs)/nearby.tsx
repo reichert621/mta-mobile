@@ -170,7 +170,7 @@ export default function NearbyScreen() {
       </View>
 
       {location ? (
-        <NearbyStations location={location} />
+        <NearbyStations location={location} setRefreshing={setRefreshing} />
       ) : (
         <View className="flex-1 justify-center items-center py-12">
           <ActivityIndicator />
