@@ -17,11 +17,7 @@ import { useStationsByLocation } from "@/utils/api";
 import { useRefreshOnFocus } from "@/utils/hooks";
 import ScheduleItem from "@/components/ScheduleItem";
 
-const NearbyStations = ({
-  location,
-}: {
-  location: Location.LocationObject;
-}) => {
+const NearbyStations = ({ location, setRefreshing }) => {
   const { coords } = location;
   const { latitude, longitude } = coords;
   const {
@@ -34,6 +30,7 @@ const NearbyStations = ({
   } = useStationsByLocation(latitude, longitude, {
     placeholderData: keepPreviousData,
     refetchInterval: 10000,
+    onSettled: () => setRefreshing(false),
   });
   useRefreshOnFocus(refetch);
 
