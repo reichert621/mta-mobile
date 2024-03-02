@@ -14,7 +14,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { cn } from "@/utils";
 import { SafeScrollView } from "@/components/SafeView";
 import { useStationsByLocation } from "@/utils/api";
-import { useRefreshOnFocus } from "@/utils/hooks";
+import { useAppState, useRefreshOnFocus } from "@/utils/hooks";
 import ScheduleItem from "@/components/ScheduleItem";
 
 const NearbyStations = ({
@@ -131,25 +131,26 @@ export default function NearbyScreen() {
     React.useState<Location.LocationObject | null>(null);
   const [error, setErrorMessage] = React.useState<string | null>(null);
 
+  const refreshCurrentLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("Status:", status);
+    if (status !== "granted") {
+      setErrorMessage("Permission to access location was denied");
+      return;
+    }
+    console.log("Fetching location...");
+    const last = await Location.getLastKnownPositionAsync({});
+    console.log("Last known:", last);
+    setLastKnownLocation(last);
+    const current = await Location.getCurrentPositionAsync({});
+    console.log("Current location:", current);
+    setCurrentLocation(current);
+  };
+
+  useRefreshOnFocus(refreshCurrentLocation);
+
   React.useEffect(() => {
-    const init = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      console.log("Status:", status);
-      if (status !== "granted") {
-        setErrorMessage("Permission to access location was denied");
-        return;
-      }
-      console.log("Fetching location...");
-
-      const last = await Location.getLastKnownPositionAsync({});
-      console.log("Last known:", last);
-      setLastKnownLocation(last);
-      const current = await Location.getCurrentPositionAsync({});
-      console.log("Current location:", current);
-      setCurrentLocation(current);
-    };
-
-    init();
+    refreshCurrentLocation();
   }, []);
 
   const location = currentLocation || lastKnownLocation;
