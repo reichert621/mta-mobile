@@ -122,11 +122,10 @@ const NearbyStations = ({ location, setRefreshing }) => {
 };
 
 export default function NearbyScreen() {
-  const [lastKnownLocation, setLastKnownLocation] =
-    React.useState<Location.LocationObject | null>(null);
-  const [currentLocation, setCurrentLocation] =
-    React.useState<Location.LocationObject | null>(null);
+  const [lastKnownLocation, setLastKnownLocation] = React.useState<Location.LocationObject | null>(null);
+  const [currentLocation, setCurrentLocation] = React.useState<Location.LocationObject | null>(null);
   const [error, setErrorMessage] = React.useState<string | null>(null);
+  const [refreshing, setRefreshing] = React.useState(false);
 
   React.useEffect(() => {
     const init = async () => {
