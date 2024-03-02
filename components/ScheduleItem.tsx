@@ -24,12 +24,10 @@ const ScheduleItem = ({
   const [n, setN] = React.useState(0);
 
   React.useEffect(() => {
-    if (mins < 1) {
-      const i = setInterval(() => setN((n) => n + 1), 1000);
+    const i = setInterval(() => setN((n) => n + 1), 1000);
 
-      return () => clearInterval(i);
-    }
-  }, [mins]);
+    return () => clearInterval(i);
+  }, []);
 
   return (
     <Pressable
