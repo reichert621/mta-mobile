@@ -112,6 +112,23 @@ export default function NearbyScreen() {
   const [error, setErrorMessage] = React.useState<string | null>(null);
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const location = currentLocation || lastKnownLocation;
+  const { coords } = location;
+  const { latitude, longitude } = coords;
+  const {
+    data: stations = [],
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+    error,
+    refetch,
+  } = useStationsByLocation(latitude, longitude, {
+    placeholderData: keepPreviousData,
+    refetchInterval: 10000,
+    onSettled: () => setRefreshing(false),
+  });
+  useRefreshOnFocus(refetch);
+
   React.useEffect(() => {
     const init = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
