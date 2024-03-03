@@ -17,9 +17,12 @@ def subtract(x, y):
     "Subtract two numbers"
     return x - y
 
-def multiply(x, y):
-    "Multiply two numbers"
-    return x * y
+def multiply(numbers):
+    "Multiply a list of numbers"
+    result = 1
+    for num in numbers:
+        result *= num
+    return result
 
 def divide(x, y):
     "Divide two numbers, return error if divisor is zero"
