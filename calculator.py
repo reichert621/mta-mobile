@@ -1,9 +1,9 @@
 
 import math
 
-def add(x, y):
-    "Add two numbers"
-    return x + y
+def add(numbers):
+    "Add a list of numbers"
+    return sum(numbers)
 
 def power(x, y):
     "Calculate the power of a number"
