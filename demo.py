@@ -41,5 +41,22 @@ def divide():
         return jsonify({'error': 'Division by zero is not allowed'}), 400
     return jsonify({'result': num1 / num2})
 
+@app.route('/api/area/circle', methods=['GET'])
+def circle_area():
+    radius = request.args.get('radius', type=float)
+    return jsonify({'result': 3.141592653589793 * radius * radius})
+
+@app.route('/api/area/rectangle', methods=['GET'])
+def rectangle_area():
+    length = request.args.get('length', type=float)
+    width = request.args.get('width', type=float)
+    return jsonify({'result': length * width})
+
+@app.route('/api/area/triangle', methods=['GET'])
+def triangle_area():
+    base = request.args.get('base', type=float)
+    height = request.args.get('height', type=float)
+    return jsonify({'result': 0.5 * base * height})
+
 if __name__ == '__main__':
     app.run(debug=True)
