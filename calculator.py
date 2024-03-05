@@ -13,9 +13,12 @@ def sqrt(x):
     "Calculate the square root of a number"
     return math.sqrt(x)
 
-def subtract(x, y):
-    "Subtract two numbers"
-    return x - y
+def subtract(numbers):
+    "Subtract a list of numbers"
+    result = numbers[0]
+    for num in numbers[1:]:
+        result -= num
+    return result
 
 def multiply(numbers):
     "Multiply a list of numbers"
