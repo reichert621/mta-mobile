@@ -53,3 +53,11 @@ def tan(x):
 def abs_val(x):
     "Calculate the absolute value of a number"
     return abs(x)
+
+def triangle_area(base, height):
+    "Calculate the area of a triangle"
+    return 0.5 * base * height
+
+def rectangle_area(length, width):
+    "Calculate the area of a rectangle"
+    return length * width
