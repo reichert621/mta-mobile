@@ -58,5 +58,27 @@ def triangle_area():
     height = request.args.get('height', type=float)
     return jsonify({'result': 0.5 * base * height})
 
+@app.route('/api/volume/cube', methods=['GET'])
+def cube_volume():
+    side = request.args.get('side', type=float)
+    return jsonify({'result': side ** 3})
+
+@app.route('/api/volume/sphere', methods=['GET'])
+def sphere_volume():
+    radius = request.args.get('radius', type=float)
+    return jsonify({'result': (4/3) * 3.141592653589793 * radius ** 3})
+
+@app.route('/api/volume/cylinder', methods=['GET'])
+def cylinder_volume():
+    radius = request.args.get('radius', type=float)
+    height = request.args.get('height', type=float)
+    return jsonify({'result': 3.141592653589793 * radius ** 2 * height})
+
+@app.route('/api/volume/cone', methods=['GET'])
+def cone_volume():
+    radius = request.args.get('radius', type=float)
+    height = request.args.get('height', type=float)
+    return jsonify({'result': (1/3) * 3.141592653589793 * radius ** 2 * height})
+
 if __name__ == '__main__':
     app.run(debug=True)
