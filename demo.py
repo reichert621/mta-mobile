@@ -80,5 +80,14 @@ def cone_volume():
     height = request.args.get('height', type=float)
     return jsonify({'result': (1/3) * 3.141592653589793 * radius ** 2 * height})
 
+@app.route('/api/speed', methods=['GET'])
+def calculate_speed():
+    distance = request.args.get('distance', type=float)
+    time = request.args.get('time', type=float)
+    if time == 0:
+        return jsonify({'error': 'Time cannot be zero'}), 400
+    speed = distance / time
+    return jsonify({'result': speed})
+
 if __name__ == '__main__':
     app.run(debug=True)
