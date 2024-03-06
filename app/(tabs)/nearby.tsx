@@ -143,6 +143,21 @@ export default function NearbyScreen() {
   }, []);
 
   const location = currentLocation || lastKnownLocation;
+  const { coords } = location;
+  const { latitude, longitude } = coords;
+  const {
+    data: stations = [],
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+    error,
+    refetch,
+  } = useStationsByLocation(latitude, longitude, {
+    placeholderData: keepPreviousData,
+    refetchInterval: 10000,
+  });
+  useRefreshOnFocus(refetch);
+
   // TODO: come up with better loading stat
   console.log("Location:", location);
 
@@ -161,7 +176,7 @@ export default function NearbyScreen() {
       </View>
 
       {location ? (
-        <NearbyStations location={location} />
+        <NearbyStations location={location} stations={stations} />
       ) : (
         <View className="flex-1 justify-center items-center py-12">
           <ActivityIndicator />
