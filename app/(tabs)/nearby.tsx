@@ -19,23 +19,13 @@ import ScheduleItem from "@/components/ScheduleItem";
 
 const NearbyStations = ({
   location,
+  stations,
 }: {
   location: Location.LocationObject;
+  stations: any[];
 }) => {
   const { coords } = location;
   const { latitude, longitude } = coords;
-  const {
-    data: stations = [],
-    isLoading,
-    isRefetching,
-    isPlaceholderData,
-    error,
-    refetch,
-  } = useStationsByLocation(latitude, longitude, {
-    placeholderData: keepPreviousData,
-    refetchInterval: 10000,
-  });
-  useRefreshOnFocus(refetch);
 
   // console.log({
   //   isLoading,
