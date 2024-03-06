@@ -17,7 +17,25 @@ import { useStationsByLocation } from "@/utils/api";
 import { useRefreshOnFocus } from "@/utils/hooks";
 import ScheduleItem from "@/components/ScheduleItem";
 
-const NearbyStations = ({ location, setRefreshing, stations }) => {
+const NearbyStations = ({
+  location,
+}: {
+  location: Location.LocationObject;
+}) => {
+  const { coords } = location;
+  const { latitude, longitude } = coords;
+  const {
+    data: stations = [],
+    isLoading,
+    isRefetching,
+    isPlaceholderData,
+    error,
+    refetch,
+  } = useStationsByLocation(latitude, longitude, {
+    placeholderData: keepPreviousData,
+    refetchInterval: 10000,
+  });
+  useRefreshOnFocus(refetch);
 
   // console.log({
   //   isLoading,
@@ -107,27 +125,11 @@ const NearbyStations = ({ location, setRefreshing, stations }) => {
 };
 
 export default function NearbyScreen() {
-  const [lastKnownLocation, setLastKnownLocation] = React.useState<Location.LocationObject | null>(null);
-  const [currentLocation, setCurrentLocation] = React.useState<Location.LocationObject | null>(null);
+  const [lastKnownLocation, setLastKnownLocation] =
+    React.useState<Location.LocationObject | null>(null);
+  const [currentLocation, setCurrentLocation] =
+    React.useState<Location.LocationObject | null>(null);
   const [error, setErrorMessage] = React.useState<string | null>(null);
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const location = currentLocation || lastKnownLocation;
-  const { coords } = location;
-  const { latitude, longitude } = coords;
-  const {
-    data: stations = [],
-    isLoading,
-    isRefetching,
-    isPlaceholderData,
-    error,
-    refetch,
-  } = useStationsByLocation(latitude, longitude, {
-    placeholderData: keepPreviousData,
-    refetchInterval: 10000,
-    onSettled: () => setRefreshing(false),
-  });
-  useRefreshOnFocus(refetch);
 
   React.useEffect(() => {
     const init = async () => {
@@ -157,12 +159,9 @@ export default function NearbyScreen() {
   return (
     <SafeScrollView
       className="bg-white dark:bg-zinc-950"
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={() => {
-          setRefreshing(true);
-          refetch();
-        }} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={false} onRefresh={console.log} />
+      // }
     >
       <View className="mt-12 mb-4 px-4">
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
@@ -172,7 +171,7 @@ export default function NearbyScreen() {
       </View>
 
       {location ? (
-        <NearbyStations location={location} setRefreshing={setRefreshing} stations={stations} />
+        <NearbyStations location={location} />
       ) : (
         <View className="flex-1 justify-center items-center py-12">
           <ActivityIndicator />
