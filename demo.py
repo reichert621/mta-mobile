@@ -89,5 +89,9 @@ def calculate_speed():
     speed = distance / time
     return jsonify({'result': speed})
 
+@app.route('/api/meaning_of_life', methods=['GET'])
+def meaning_of_life():
+    return jsonify({'result': 42})
+
 if __name__ == '__main__':
     app.run(debug=True)
