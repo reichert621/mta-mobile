@@ -164,9 +164,9 @@ export default function NearbyScreen() {
   return (
     <SafeScrollView
       className="bg-white dark:bg-zinc-950"
-      // refreshControl={
-      //   <RefreshControl refreshing={false} onRefresh={console.log} />
-      // }
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+      }
     >
       <View className="mt-12 mb-4 px-4">
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">
