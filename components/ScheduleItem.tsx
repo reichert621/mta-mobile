@@ -1,9 +1,8 @@
 import { Pressable, Text, View } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import React from "react";
 import dayjs from "dayjs";
 
-import { FavoriteStation, cn, getColorByRoute } from "@/utils";
+import { cn, getColorByRoute } from "@/utils";
 
 const ScheduleItem = ({
   className,
@@ -24,11 +23,9 @@ const ScheduleItem = ({
   const [n, setN] = React.useState(0);
 
   React.useEffect(() => {
-    if (mins < 1) {
-      const i = setInterval(() => setN((n) => n + 1), 1000);
+    const i = setInterval(() => setN((n) => n + 1), mins < 1 ? 1000 : 30000);
 
-      return () => clearInterval(i);
-    }
+    return () => clearInterval(i);
   }, [mins]);
 
   return (

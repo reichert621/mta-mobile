@@ -14,8 +14,74 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { cn } from "@/utils";
 import { SafeScrollView } from "@/components/SafeView";
 import { useStationsByLocation } from "@/utils/api";
-import { useAppState, useRefreshOnFocus } from "@/utils/hooks";
+import { useRefreshByUser, useRefreshOnFocus } from "@/utils/hooks";
 import ScheduleItem from "@/components/ScheduleItem";
+
+function useCurrentLocation() {
+  const [isLoading, setLoadingState] = React.useState(true);
+  const [isRefreshing, setRefreshingState] = React.useState(false);
+  const [lastKnownLocation, setLastKnownLocation] =
+    React.useState<Location.LocationObject | null>(null);
+  const [currentLocation, setCurrentLocation] =
+    React.useState<Location.LocationObject | null>(null);
+  const [error, setErrorMessage] = React.useState<string | null>(null);
+  const location = currentLocation || lastKnownLocation;
+
+  React.useEffect(() => {
+    const init = async () => {
+      try {
+        setLoadingState(true);
+        await refresh();
+      } catch (err: any) {
+        setErrorMessage(err.message || String(err));
+      } finally {
+        setLoadingState(false);
+      }
+    };
+
+    init();
+  }, []);
+
+  const refetchLastKnownPosition = React.useCallback(async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("Status:", status);
+    if (status !== "granted") {
+      setErrorMessage("Permission to access location was denied");
+      return;
+    }
+
+    const last = await Location.getLastKnownPositionAsync({});
+    console.log("Last known:", last);
+    setLastKnownLocation(last);
+  }, []);
+
+  const refetchCurrentPosition = React.useCallback(async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("Status:", status);
+    if (status !== "granted") {
+      setErrorMessage("Permission to access location was denied");
+      return;
+    }
+
+    const current = await Location.getCurrentPositionAsync({});
+    console.log("Current location:", current);
+    setCurrentLocation(current);
+  }, []);
+
+  const refresh = React.useCallback(async () => {
+    await Promise.all([refetchLastKnownPosition(), refetchCurrentPosition()]);
+  }, []);
+
+  return {
+    isLoading,
+    isRefreshing,
+    location,
+    error,
+    refetchLastKnownPosition,
+    refetchCurrentPosition,
+    refresh,
+  };
+}
 
 const NearbyStations = ({
   location,
@@ -125,44 +191,37 @@ const NearbyStations = ({
 };
 
 export default function NearbyScreen() {
-  const [lastKnownLocation, setLastKnownLocation] =
-    React.useState<Location.LocationObject | null>(null);
-  const [currentLocation, setCurrentLocation] =
-    React.useState<Location.LocationObject | null>(null);
-  const [error, setErrorMessage] = React.useState<string | null>(null);
+  const [isRefreshingByUser, setRefreshingByUser] = React.useState(false);
+  const {
+    location,
+    refresh,
+    refetchLastKnownPosition,
+    refetchCurrentPosition,
+  } = useCurrentLocation();
 
-  const refreshCurrentLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    console.log("Status:", status);
-    if (status !== "granted") {
-      setErrorMessage("Permission to access location was denied");
-      return;
+  useRefreshOnFocus(refresh);
+
+  async function handleRefreshByUser() {
+    try {
+      setRefreshingByUser(true);
+      await refetchLastKnownPosition();
+      setRefreshingByUser(false);
+      // NB: this refetch takes longer, so we do it in the background
+      await refetchCurrentPosition();
+    } finally {
+      setRefreshingByUser(false);
     }
-    console.log("Fetching location...");
-    const last = await Location.getLastKnownPositionAsync({});
-    console.log("Last known:", last);
-    setLastKnownLocation(last);
-    const current = await Location.getCurrentPositionAsync({});
-    console.log("Current location:", current);
-    setCurrentLocation(current);
-  };
-
-  useRefreshOnFocus(refreshCurrentLocation);
-
-  React.useEffect(() => {
-    refreshCurrentLocation();
-  }, []);
-
-  const location = currentLocation || lastKnownLocation;
-  // TODO: come up with better loading stat
-  console.log("Location:", location);
+  }
 
   return (
     <SafeScrollView
       className="bg-white dark:bg-zinc-950"
-      // refreshControl={
-      //   <RefreshControl refreshing={false} onRefresh={console.log} />
-      // }
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshingByUser}
+          onRefresh={handleRefreshByUser}
+        />
+      }
     >
       <View className="mt-12 mb-4 px-4">
         <Text className="font-bold text-zinc-900 dark:text-zinc-100 text-4xl">

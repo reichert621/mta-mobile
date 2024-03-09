@@ -56,3 +56,22 @@ export function useRefreshOnFocus(refetch: () => void) {
     )
   );
 }
+
+export function useRefreshByUser(refetch: () => Promise<unknown>) {
+  const [isRefreshing, setRefreshingState] = React.useState(false);
+
+  async function refresh() {
+    setRefreshingState(true);
+
+    try {
+      await refetch();
+    } finally {
+      setRefreshingState(false);
+    }
+  }
+
+  return {
+    isRefreshing,
+    refresh,
+  };
+}
