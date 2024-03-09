@@ -1,4 +1,6 @@
-const tintColorLight = "#2f95dc";
+import colors from "tailwindcss/colors";
+
+const tintColorLight = colors.blue[600];
 const tintColorDark = "#fff";
 
 export default {
